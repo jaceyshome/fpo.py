@@ -3,10 +3,6 @@
 ## Prerequisites
 Python 3.6.4
 
-### Install pip
-https://pip.pypa.io/en/stable/installing/
-run command `python get-pip.py`
-
 ### Install pip3 and major libraries
 https://linoxide.com/linux-how-to/install-flask-python-ubuntu/
 
