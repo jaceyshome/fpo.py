@@ -37,7 +37,6 @@ source env/bin/activate
 
 ### Doc 
 https://pdoc3.github.io/pdoc/doc/pdoc/
-http://docutils.sourceforge.net/docs/ref/rst/directives.html#admonitions
 
 Update doc
 ```
