@@ -1,3 +1,4 @@
-pdoc
-pycodestyle
 autopep8
+pycodestyle
+pdoc
+pytest
