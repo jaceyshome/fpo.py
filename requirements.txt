@@ -1,0 +1,3 @@
+pdoc
+pycodestyle
+autopep8
