@@ -32,8 +32,7 @@ source env/bin/activate
 ###Install dependencies
 ```
 pip3 install -r requirements.txt
-
-## Running the application
+```
 
 ### Running the virtual environment
 ```
