@@ -29,9 +29,8 @@ def ap(fns, list):
 Wraps a function to spread out the properties from an object arugment as individual positional arguments
 
 ###Arguments:
-    fn: function to wrap
-    props: (optional) list of property names (strings) to indicate the order to spread properties as individual arguments. If omitted, the signature of fn is parsed for its parameter list to try to determine an ordered property list; this detection only works for simple parameters (including those with default parameter value settings).
-
+    fn:     function to wrap
+    props:  (optional) list of property names (strings) to indicate the order to spread properties as individual arguments. If omitted, the signature of fn is parsed for its parameter list to try to determine an ordered property list; this detection only works for simple parameters (including those with default parameter value settings).
 
 ###Returns:
     function
@@ -49,7 +48,6 @@ Wraps a function to spread out the properties from an object arugment as individ
 '''
 def apply(fn, props):
     pass
-
 
 
 '''
@@ -82,10 +80,10 @@ def pluck(list, *args):
 Returns the specified number of elements from the value, starting from the beginning.
 
 ###Arguments:
-    iterable:   list, string or set
+    iterable:   list/string
     n:          number of elements to take from the beginning of the value; if omitted, defaults to `1`
 ###Returns:
-    list, string or set
+    list/string
 ###Example:
     items = [2,4,6,8,10]
     assert FPO.take(items, 3) == [2,4,6]
@@ -100,8 +98,11 @@ def take(iterable, n=1):
     counter = 0
     for item in iterable: 
         if counter == n:
-            return r
+            break
         counter += 1
         r.append(item)
-    return r 
+    if isinstance(iterable, str):
+        return ''.join(r)
+    else: 
+        return r
     
