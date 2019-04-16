@@ -1,7 +1,7 @@
 #FPO.py
 
 ## Prerequisites
-Python 3.6.4
+Python 3.6.x
 
 ### Install pip3 and major libraries
 https://linoxide.com/linux-how-to/install-flask-python-ubuntu/
@@ -9,7 +9,7 @@ https://linoxide.com/linux-how-to/install-flask-python-ubuntu/
 ```
 sudo apt-get update
 sudo apt-get install python3-pip python3-dev
-sudo apt-get install python3-venv
+sudo apt-get install python3.6-venv
 ```
 ### Setup
 
@@ -35,7 +35,7 @@ pip3 install -r requirements.txt
 source env/bin/activate
 ```
 
-### Doc 
+### Doc
 https://pdoc3.github.io/pdoc/doc/pdoc/
 
 Update doc
