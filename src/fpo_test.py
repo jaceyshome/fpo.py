@@ -11,3 +11,9 @@ def test_ap():
     fn2 = lambda v:  v * 2
     nums = [1,2,3,4,5]
     assert FPO.ap([fn1, fn2], nums) == [2, 3, 4, 5, 6, 2, 4, 6, 8, 10]
+
+def test_take():
+    items = [2,4,6,8,10]
+    assert FPO.take(items, 3) == [2,4,6]
+    assert FPO.take(items) == [2]
+    assert FPO.take({'apple','banana','cherry'}, 2) == ['apple','banana']

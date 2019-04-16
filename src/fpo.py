@@ -3,7 +3,7 @@
 ##FPO.ap(...)
 Produces a new list that is a concatenation of sub-lists, each produced by calling FPO.map(..) with each mapper function and the main list.
 
-###Args:
+###Arguments:
     fns:   a list of functions
     list:  a list
 
@@ -28,7 +28,7 @@ def ap(fns, list):
 ##FPO.apply(...)
 Wraps a function to spread out the properties from an object arugment as individual positional arguments
 
-###Args:
+###Arguments:
     fn: function to wrap
     props: (optional) list of property names (strings) to indicate the order to spread properties as individual arguments. If omitted, the signature of fn is parsed for its parameter list to try to determine an ordered property list; this detection only works for simple parameters (including those with default parameter value settings).
 
@@ -56,7 +56,7 @@ def apply(fn, props):
 ##FPO.pluck(...)
 Plucks properties form the given list and return a list of properties' values
 
-###Args:
+###Arguments:
     list:   list
     *args:  properties
 
@@ -77,3 +77,31 @@ def pluck(list, *args):
     else:
         return r
 
+'''
+##FPO.take(...)
+Returns the specified number of elements from the value, starting from the beginning.
+
+###Arguments:
+    iterable:   list, string or set
+    n:          number of elements to take from the beginning of the value; if omitted, defaults to `1`
+###Returns:
+    list, string or set
+###Example:
+    items = [2,4,6,8,10]
+    assert FPO.take(items, 3) == [2,4,6]
+    assert FPO.take(items) == [2]
+    assert FPO.take({'apple','banana','cherry'}, 2) == ['apple','banana']
+### 
+'''
+def take(iterable, n=1):
+    r = []
+    if iterable == None:
+        return r
+    counter = 0
+    for item in iterable: 
+        if counter == n:
+            return r
+        counter += 1
+        r.append(item)
+    return r 
+    
