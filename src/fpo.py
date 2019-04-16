@@ -56,6 +56,7 @@ def apply(fn, props=None):
     return applied
 
 
+
 '''
 ##FPO.pluck(...)
 Plucks properties form the given list and return a list of properties' values
