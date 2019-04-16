@@ -36,18 +36,24 @@ Wraps a function to spread out the properties from an object arugment as individ
     function
 
 ###Example:
-    def foo(x,y = 2): return x + y
-    def bar([a,b],c): return a + b + c
+    def foo(x, y=2): return x + y
+    def bar(a, b, c=0): return a + b + c
 
-    f = FPO.apply(fn: foo)
-    p = FPO.apply(fn: bar, props:["x","y"]);
+    f = FPO.apply(fn=foo)
+    p = FPO.apply(fn=bar, props=['x','y'])
 
-    f({x: 1, y:1})   // 2
-    f({x: 3})         // 5
-    p({x:[1,2], y: 3}))    // 6
+    assert f({'a': 1, 'b':1}) == 2
+    assert f({'x': 3}) == 5
+    assert p({'x': 3, 'y': 2}) == 5
 '''
-def apply(fn, props):
-    pass
+def apply(fn, props=None):
+    ln = lambda d, props: {key:d[key] for key in props}
+    def applied(d):
+        if props is None:
+            return fn(*(v for key, v in d.items())) 
+        else:
+            return fn(*(d[key] for key in props))        
+    return applied
 
 
 '''
@@ -74,6 +80,8 @@ def pluck(list, *args):
         return [v[0] for v in r]
     else:
         return r
+
+
 
 '''
 ##FPO.take(...)
