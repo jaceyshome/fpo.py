@@ -49,9 +49,8 @@ Wraps a function to spread out the properties from an object arugment as individ
 def apply(fn, props=None):
     def applied(d):
         if props is None:
-             fn(*(v for key, v in d.items()))
-        else:
-            return fn(*(d[key] for key in props))
+            return fn(*(d[key] for key,v in d.items()))
+        return fn(*(d[key] for key in props))
     return applied
 
 
@@ -73,11 +72,7 @@ def binary(fn,props):
     _props = props[slice(0,2)]
     ln = lambda d, props: {key:d[key] for key in props}
     def binaryFn(d):
-        print(*d)
-        print('A:', _props)
-        arg = ln(d, _props)
-        print('B', *arg)
-        return fn(**arg)
+        return fn(**ln(d, _props))
     return binaryFn
 
 
