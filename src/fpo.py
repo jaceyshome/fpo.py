@@ -47,13 +47,38 @@ Wraps a function to spread out the properties from an object arugment as individ
     assert p({'x': 3, 'y': 2}) == 5
 '''
 def apply(fn, props=None):
-    ln = lambda d, props: {key:d[key] for key in props}
     def applied(d):
         if props is None:
-            return fn(*(v for key, v in d.items())) 
+             fn(*(v for key, v in d.items()))
         else:
-            return fn(*(d[key] for key in props))        
+            return fn(*(d[key] for key in props))
     return applied
+
+
+
+'''
+##FPO.binary(...)
+Wraps a function to restrict its inputs to dictionary with only two named arguments as specified.
+
+###Arguments:
+    fn:     function to wrap
+    props:  array of two property names to allow as named arguments
+###Returns:
+    function
+###Example:
+
+###
+'''
+def binary(fn,props):
+    _props = props[slice(0,2)]
+    ln = lambda d, props: {key:d[key] for key in props}
+    def binaryFn(d):
+        print(*d)
+        print('A:', _props)
+        arg = ln(d, _props)
+        print('B', *arg)
+        return fn(**arg)
+    return binaryFn
 
 
 
@@ -98,20 +123,21 @@ Returns the specified number of elements from the value, starting from the begin
     assert FPO.take(items, 3) == [2,4,6]
     assert FPO.take(items) == [2]
     assert FPO.take({'apple','banana','cherry'}, 2) == ['apple','banana']
-### 
+###
 '''
 def take(iterable, n=1):
     r = []
     if iterable == None:
         return r
     counter = 0
-    for item in iterable: 
+    for item in iterable:
         if counter == n:
             break
         counter += 1
         r.append(item)
     if isinstance(iterable, str):
         return ''.join(r)
-    else: 
+    else:
         return r
-    
+
+

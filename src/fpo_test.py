@@ -8,22 +8,32 @@ def test_ap():
     nums = [1,2,3,4,5]
     assert FPO.ap([fn1, fn2], nums) == [2, 3, 4, 5, 6, 2, 4, 6, 8, 10]
 
+
 def test_apply():
     def foo(x, y=2): return x + y
     def bar(a, b, c=0): return a + b + c
-
     f = FPO.apply(fn=foo)
     p = FPO.apply(fn=bar, props=['x','y'])
-
     assert f({'a': 1, 'b':1}) == 2
     assert f({'x': 3}) == 5
     assert p({'x': 3, 'y': 2}) == 5
+
+
+def test_binary():
+    def foo(x,y): return x + y
+    def bar(a,b,c=1): return a + b + c
+    f = FPO.binary(fn=foo, props=['x','y'])
+    p = FPO.binary(fn=bar, props=['a','b'])
+    assert f({'x':1, 'y':2, 'z':4}) == 3
+    assert p({'a':2,'b':4,'c':6}) == 7
+
 
 # def test_apply():
 def test_pluck():
     arr = [{'x': 1, 'y':2}, {'x': 3, 'y': 4}]
     assert FPO.pluck(arr, 'x', 'y') == [[1, 2], [3, 4]]
     assert FPO.pluck(arr, 'x') == [1, 3]
+
 
 def test_take():
     items = [2,4,6,8,10]
