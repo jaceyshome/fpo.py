@@ -28,6 +28,30 @@ def test_binary():
     assert p({'a':2,'b':4,'c':6}) == 7
 
 
+def test_complement():
+    def foo(x,y): return x > y
+    def bar(): return True
+    f = FPO.complement(foo)
+    p = FPO.complement(bar)
+    assert foo(3,2) == True
+    assert f(3,2) == False
+    assert bar() == True
+    assert p() == False
+
+def test_compose():
+    f = FPO.compose([
+        lambda v: v+2,
+        lambda v: v*2,
+        lambda v: v-2,
+    ])
+    assert f(10) == 18
+
+def test_constant():
+    f = FPO.constant(12)
+    assert f() == 12
+    assert f(24,9) == 12
+    assert f(24) == 12
+
 # def test_apply():
 def test_pluck():
     arr = [{'x': 1, 'y':2}, {'x': 3, 'y': 4}]

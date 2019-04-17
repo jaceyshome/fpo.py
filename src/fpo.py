@@ -78,6 +78,75 @@ def binary(fn,props):
 
 
 '''
+##FPO.complement(...)
+Wraps a predicate function -- a function that produces true / false -- to negate its result.
+###Arguments:
+    fn:     function to wrap
+###Returns:
+    function
+###Example:
+    def foo(x,y): return x > y
+    def bar(): return True
+    f = FPO.complement(foo)
+    p = FPO.complement(bar)
+    assert foo(3,2) == True
+    assert f(3,2) == False
+    assert bar() == True
+    assert p() == False
+'''
+def complement(fn):
+    def complemented(*arg):
+        return False if fn(*arg) is True else True
+    return complemented
+
+
+
+'''
+##FPO.compose(...)
+Produces a new function that's the composition of a list of functions. Functions are composed right-to-left (unlike FPO.pipe(..)) from the array.
+###Arguments:
+    fns:     array of (lambda)functions
+###Returns:
+    function
+###Example:
+    f = FPO.compose([
+        lambda v: v+2,
+        lambda v: v*2,
+        lambda v: v-2,
+    ])
+    assert f(10) == 18
+'''
+def compose(fns):
+    def composed(v):
+        result = v
+        for fn in reversed(fns):
+            result = fn(result)
+        return result
+    return composed
+
+
+
+'''
+##FPO.constant(...)
+Wraps a value in a function that returns the value.
+###Arguments:
+    v:     constant value
+###Returns:
+    function
+###Example:
+    f = FPO.constant(12)
+    assert f() == 12
+    assert f(24,9) == 12
+    assert f(24) == 12
+'''
+def constant(v):
+    def fn(*arg):
+        return v
+    return fn
+
+
+
+'''
 ##FPO.pluck(...)
 Plucks properties form the given list and return a list of properties' values
 
