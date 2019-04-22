@@ -220,6 +220,111 @@ def curry_multiple(fn, n):
 
 
 '''
+##FPO.filter_in(...)
+Commonly known as filter(..), produces a new list by calling a predicate function with each value in the original list. For each value, if the predicate function returns true (or truthy), the value is included in (aka, filtered into) the new list. Otherwise, the value is omitted.
+It is the same as python filter() method
+###Arguments:
+    fn:     predicate function; called with v (value), i (index), and arr (array) named arguments
+    arr:    array to filter against
+###Returns:
+    list
+###Aliases:
+    FPO.keep(..)
+###Example:
+    def is_odd(v):
+        return v % 2 == 1
+    nums = [1,2,3,4,5]
+    assert FPO.filter_in(fn=is_odd, arr=nums) == [1,3,5]
+'''
+def filter_in(fn,arr):
+    r = []
+    for e in arr:
+        if fn(e):
+           r.append(e)
+    return r
+keep = filter_in
+
+
+
+'''
+##FPO.filter_in_dict(...)
+Produces a new dictionary by calling a predicate function with each property value in the original dictionary. For each value, if the predicate function returns true (or truthy), the value is included in (aka, filtered into) the new object at the same property name. Otherwise, the value is omitted.
+###Arguments:
+    fn:     predicate function; called with v (value), i (property name), and o (object) named arguments
+    d:      dictionary to filter against
+###Returns:
+    dictionary
+###Aliases:
+    FPO.keep_dict(..)
+###Example:
+    def is_odd(v):
+        return v % 2 == 1
+    nums = {'x':1,'y':2,'z':3,'r':4,'l':5}
+    assert FPO.filter_in_dict(fn=is_odd, d=nums) == {'x':1,'z':3,'l':5}
+'''
+def filter_in_dict(fn, d):
+    r = {}
+    for key,v in d.items():
+        if fn(v):
+            r[key] = v
+    return r
+keep_dict = filter_in_dict
+
+
+
+'''
+##FPO.filter_out(...)
+The inverse of FPO.filterIn(..), produces a new list by calling a predicate function with each value in the original list. For each value, if the predicate function returns true (or truthy), the value is omitted from (aka, filtered out of) the new list. Otherwise, the value is included.
+###Arguments:
+    fn:     predicate function; called with v (value), i (index), and arr (array) named arguments
+    arr:    array to filter against
+###Returns:
+    list
+###Aliases:
+    FPO.reject(..)
+###Example:
+    def is_odd(v):
+        return v % 2 == 1
+    nums = [1,2,3,4,5]
+    assert FPO.filter_out(fn=is_odd, arr=nums) == [2,4]
+'''
+def filter_out(fn,arr):
+    r = []
+    for e in arr:
+        if fn(e) is not True:
+           r.append(e)
+    return r
+reject = filter_out
+
+
+
+'''
+##FPO.filter_out_dict(...)
+The inverse of FPO.filterInObj(..), produces a new dictionary by calling a predicate function with each property value in the original dictionary. For each value, if the predicate function returns true (or truthy), the value is omitted from (aka, filtered out of) the new object. Otherwise, the value is included at the same property name.
+###Arguments:
+    fn:     predicate function; called with v (value), i (property name), and o (object) named arguments
+    d:      dictionary to filter against
+###Returns:
+    dictionary
+###Aliases:
+    FPO.reject_dict(..)
+###Example:
+    def is_odd(v):
+        return v % 2 == 1
+    nums = [1,2,3,4,5]
+    assert FPO.filter_in(fn=is_odd, arr=nums) == [1,3,5]
+'''
+def filter_out_dict(fn, d):
+    r = {}
+    for key,v in d.items():
+        if fn(v) != True:
+            r[key] = v
+    return r
+keep_dict = filter_out_dict
+
+
+
+'''
 ##FPO.pluck(...)
 Plucks properties form the given list and return a list of properties' values
 

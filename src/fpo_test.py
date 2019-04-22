@@ -66,6 +66,30 @@ def test_curry_multiple():
     v = f(x=0,y=1)()(x=1)(y=2,z=3)
     assert v == 6
 
+def test_filter_in():
+    def is_odd(v):
+        return v % 2 == 1
+    nums = [1,2,3,4,5]
+    assert FPO.filter_in(fn=is_odd, arr=nums) == [1,3,5]
+    
+def test_filter_dict_in():
+    def is_odd(v):
+        return v % 2 == 1
+    nums = {'x':1,'y':2,'z':3,'r':4,'l':5}
+    assert FPO.filter_in_dict(fn=is_odd, d=nums) == {'x':1,'z':3,'l':5}
+
+def test_filter_out():
+    def is_odd(v):
+        return v % 2 == 1
+    nums = [1,2,3,4,5]
+    assert FPO.filter_out(fn=is_odd, arr=nums) == [2,4]
+    
+def test_filter_out_dict():
+    def is_odd(v):
+        return v % 2 == 1
+    nums = {'x':1,'y':2,'z':3,'r':4,'l':5}
+    assert FPO.filter_out_dict(fn=is_odd, d=nums) == {'y':2,'r':4}
+
 # def test_apply():
 def test_pluck():
     arr = [{'x': 1, 'y':2}, {'x': 3, 'y': 4}]
