@@ -44,6 +44,10 @@ pdoc --html src/fpo.py --overwrite
 ```
 ### Running the test
 
+```
+ptw # pytest watch mode
+pytest -v run pytest
+```
 
 ## Deployment
 

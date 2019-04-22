@@ -147,6 +147,79 @@ def constant(v):
 
 
 '''
+##FPO.curry(...)
+Curries a function so that you can pass one argument at a time, each time getting back another function to receive the next argument. Once all arguments are passed, the underlying function is called with the arguments.
+
+Unlike FPO.curryMultiple(..), you can only pass one property argument at a time to each curried function (see example below). If multiple properties are passed to a curried call, only the first property (in enumeration order) will be passed.
+###Arguments:
+    fn:     function to curry
+    n:      number of arguments to curry for
+###Returns:
+    function
+###Example:
+    def foo(x,y,z):
+        return x + y + z
+    f = FPO.curry(fn=foo, n=3)
+    v = f(x=1)()(y=2, z=3)(z=4)
+    assert v == 7
+'''
+def curry(fn, n):
+    f_args = []
+    f_kwargs = {}
+    def curried(*args, **kwargs):
+        nonlocal f_args, f_kwargs
+        if args:
+            f_args += args[0]
+            if len(f_args) is n:
+                return fn(*f_args)
+            return curried
+        elif kwargs:
+            key = list(kwargs)[0]
+            f_kwargs[key] = kwargs[key] 
+            if len(f_kwargs) is n:
+                return fn(**f_kwargs)
+            return curried
+        else:
+            return curried
+    return curried
+
+
+
+'''
+##FPO.curry_multiple(...)
+Just like FPO.curry(..), except each curried function allows multiple arguments instead of just one.
+
+Unlike FPO.curryMultiple(..), you can only pass one property argument at a time to each curried function (see example below). If multiple properties are passed to a curried call, only the first property (in enumeration order) will be passed.
+###Arguments:
+    fn:     function to curry
+    n:      number of arguments to curry for
+###Returns:
+    function
+###Example:
+    def foo(x,y,z):
+        return x + y + z
+    f = FPO.curry_multiple(fn=foo, n=3)
+    v = f(x=0,y=1)()(x=1)(y=2,z=3)
+    assert v == 6
+'''
+def curry_multiple(fn, n):
+    f_args = []
+    f_kwargs = {}
+    def curried(*args, **kwargs):
+        nonlocal f_args, f_kwargs
+        if args or kwargs:
+            f_args += args
+            f_kwargs.update(kwargs)
+            if len(f_args) is n or len(f_kwargs) is n:
+                return fn(*f_args, **f_kwargs)
+            return curried
+        else:
+            return curried
+    return curried
+
+
+
+'''
 ##FPO.pluck(...)
 Plucks properties form the given list and return a list of properties' values
 

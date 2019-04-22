@@ -52,12 +52,25 @@ def test_constant():
     assert f(24,9) == 12
     assert f(24) == 12
 
+def test_curry():
+    def foo(x,y,z):
+        return x + y + z
+    f = FPO.curry(fn=foo, n=3)
+    v = f(x=1)()(y=2, z=3)(z=4)
+    assert v == 7
+
+def test_curry_multiple():
+    def foo(x,y,z):
+        return x + y + z
+    f = FPO.curry_multiple(fn=foo, n=3)
+    v = f(x=0,y=1)()(x=1)(y=2,z=3)
+    assert v == 6
+
 # def test_apply():
 def test_pluck():
     arr = [{'x': 1, 'y':2}, {'x': 3, 'y': 4}]
     assert FPO.pluck(arr, 'x', 'y') == [[1, 2], [3, 4]]
     assert FPO.pluck(arr, 'x') == [1, 3]
-
 
 def test_take():
     items = [2,4,6,8,10]
