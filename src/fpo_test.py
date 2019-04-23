@@ -90,6 +90,23 @@ def test_filter_out_dict():
     nums = {'x':1,'y':2,'z':3,'r':4,'l':5}
     assert FPO.filter_out_dict(fn=is_odd, d=nums) == {'y':2,'r':4}
 
+def test_flat_map():
+    def split_chars(v): return [*v]
+    words = ['hello','world']
+    assert split_chars(v=words[0]) == ['h','e','l','l','o']
+    assert list(map(split_chars, words)) == [['h','e','l','l','o'],['w','o','r','l','d']]
+    assert FPO.flat_map(fn=split_chars, l=words) == ['h','e','l','l','o','w','o','r','l','d']
+
+def test_flat_map_dict():
+    def split_evens_in_half(v, i):
+        if v % 2 == 0:
+            return { i: v/2, i+'_2': v/2 }
+        return v
+    nums = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+    assert split_evens_in_half(v=3, i='c') == 3
+    assert split_evens_in_half(v=4, i='d') == {'d':2, 'd_2': 2 }
+# TODO mapObj
+
 # def test_apply():
 def test_pluck():
     l = [{'x': 1, 'y':2}, {'x': 3, 'y': 4}]

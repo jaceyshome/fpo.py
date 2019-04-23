@@ -325,7 +325,7 @@ keep_dict = filter_out_dict
 
 
 '''
-##FPO.filter_map(...)
+##FPO.flat_map(...)
 Similar to FPO.map(..), produces a new list by calling a mapper function with each value in the original list. If the mapper function returns a list, this list is flattened (one level) into the overall list.
 ###Arguments:
     fn:     mapper function; called with v (value), i (index), and list(l) named arguments
@@ -336,10 +336,38 @@ Similar to FPO.map(..), produces a new list by calling a mapper function with ea
     FPO.chain(..)
 ###Example:
 '''
-def filter_map(fn,l):
-    pass
-chain = filter_map
+def flat_map(fn,l):
+    t = list(map(fn, l))
+    is_all_elements_are_list = True
+    for e in t:
+        if isinstance(e, (list,)) is not True:
+            is_all_elements_are_list = False
+    if is_all_elements_are_list is True:
+        r = []
+        for e in t:
+            r += ''.join(e)
+        return r
+    else:
+        return t
+chain = flat_map
 
+
+
+'''
+##FPO.flat_map_dict(...)
+Similar to FPO.mapObj(..), produces a new object by calling a mapper function with each property value in the original object. If the mapper function returns an object, this object is flattened (one level) into the overall object, by copying its properties.
+###Arguments:
+    fn:     mapper function; called with v (value), i (property name), and d (dictionary) named arguments
+    d:   dictionary to flat-map against
+###Returns:
+    dictionary
+###Aliases:
+    FPO.chain_dict(..)
+###Example:
+'''
+def flat_map_dict(fn, d):
+    pass
+chain_obj = flat_map_dict
 
 
 '''
