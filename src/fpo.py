@@ -61,7 +61,7 @@ Wraps a function to restrict its inputs to dictionary with only two named argume
 
 ###Arguments:
     fn:     function to wrap
-    props:  array of two property names to allow as named arguments
+    props:  list of two property names to allow as named arguments
 ###Returns:
     function
 ###Example:
@@ -103,9 +103,9 @@ def complement(fn):
 
 '''
 ##FPO.compose(...)
-Produces a new function that's the composition of a list of functions. Functions are composed right-to-left (unlike FPO.pipe(..)) from the array.
+Produces a new function that's the composition of a list of functions. Functions are composed right-to-left (unlike FPO.pipe(..)) from the list.
 ###Arguments:
-    fns:     array of (lambda)functions
+    fns:     list of (lambda)functions
 ###Returns:
     function
 ###Example:
@@ -175,7 +175,7 @@ def curry(fn, n):
             return curried
         elif kwargs:
             key = list(kwargs)[0]
-            f_kwargs[key] = kwargs[key] 
+            f_kwargs[key] = kwargs[key]
             if len(f_kwargs) is n:
                 return fn(**f_kwargs)
             return curried
@@ -224,8 +224,8 @@ def curry_multiple(fn, n):
 Commonly known as filter(..), produces a new list by calling a predicate function with each value in the original list. For each value, if the predicate function returns true (or truthy), the value is included in (aka, filtered into) the new list. Otherwise, the value is omitted.
 It is the same as python filter() method
 ###Arguments:
-    fn:     predicate function; called with v (value), i (index), and arr (array) named arguments
-    arr:    array to filter against
+    fn:     predicate function; called with v (value), i (index), and l (list) named arguments
+    l:    list to filter against
 ###Returns:
     list
 ###Aliases:
@@ -234,11 +234,11 @@ It is the same as python filter() method
     def is_odd(v):
         return v % 2 == 1
     nums = [1,2,3,4,5]
-    assert FPO.filter_in(fn=is_odd, arr=nums) == [1,3,5]
+    assert FPO.filter_in(fn=is_odd, l=nums) == [1,3,5]
 '''
-def filter_in(fn,arr):
+def filter_in(fn,l):
     r = []
-    for e in arr:
+    for e in l:
         if fn(e):
            r.append(e)
     return r
@@ -276,8 +276,8 @@ keep_dict = filter_in_dict
 ##FPO.filter_out(...)
 The inverse of FPO.filterIn(..), produces a new list by calling a predicate function with each value in the original list. For each value, if the predicate function returns true (or truthy), the value is omitted from (aka, filtered out of) the new list. Otherwise, the value is included.
 ###Arguments:
-    fn:     predicate function; called with v (value), i (index), and arr (array) named arguments
-    arr:    array to filter against
+    fn:     predicate function; called with v (value), i (index), and l (list) named arguments
+    l:    list to filter against
 ###Returns:
     list
 ###Aliases:
@@ -286,11 +286,11 @@ The inverse of FPO.filterIn(..), produces a new list by calling a predicate func
     def is_odd(v):
         return v % 2 == 1
     nums = [1,2,3,4,5]
-    assert FPO.filter_out(fn=is_odd, arr=nums) == [2,4]
+    assert FPO.filter_out(fn=is_odd, l=nums) == [2,4]
 '''
-def filter_out(fn,arr):
+def filter_out(fn,l):
     r = []
-    for e in arr:
+    for e in l:
         if fn(e) is not True:
            r.append(e)
     return r
@@ -311,8 +311,8 @@ The inverse of FPO.filterInObj(..), produces a new dictionary by calling a predi
 ###Example:
     def is_odd(v):
         return v % 2 == 1
-    nums = [1,2,3,4,5]
-    assert FPO.filter_in(fn=is_odd, arr=nums) == [1,3,5]
+    nums = {'x':1,'y':2,'z':3,'r':4,'l':5}
+    assert FPO.filter_out_dict(fn=is_odd, d=nums) == {'y':2,'r':4}
 '''
 def filter_out_dict(fn, d):
     r = {}
@@ -325,25 +325,40 @@ keep_dict = filter_out_dict
 
 
 '''
+##FPO.filter_map(...)
+Similar to FPO.map(..), produces a new list by calling a mapper function with each value in the original list. If the mapper function returns a list, this list is flattened (one level) into the overall list.
+###Arguments:
+    fn:     mapper function; called with v (value), i (index), and list(l) named arguments
+    l:   list to flat-map against
+###Returns:
+    list
+###Aliases:
+    FPO.chain(..)
+###Example:
+'''
+def filter_map(fn,l):
+    pass
+chain = filter_map
+
+
+
+'''
 ##FPO.pluck(...)
 Plucks properties form the given list and return a list of properties' values
-
 ###Arguments:
-    list:   list
+    l:   list
     *args:  properties
-
 ###Returns:
     a list of values
-
 ###Example:
-    arr = [{'x': 1, 'y':2}, {'x': 3, 'y': 4}]
-    assert FPO.pluck(arr, 'x', 'y') == [[1, 2], [3, 4]]
-    assert FPO.pluck(arr, 'x') == [1, 3]
+    l = [{'x': 1, 'y':2}, {'x': 3, 'y': 4}]
+    assert FPO.pluck(l, 'x', 'y') == [[1, 2], [3, 4]]
+    assert FPO.pluck(l, 'x') == [1, 3]
 '''
 # pluck = lambda d, *args: [d[arg] for arg in args]
-def pluck(list, *args):
+def pluck(l, *args):
     fn = lambda d, *args: [d[arg] for arg in args]
-    r = [fn(o, *args) for o in list]
+    r = [fn(o, *args) for o in l]
     if len(args) == 1:
         return [v[0] for v in r]
     else:

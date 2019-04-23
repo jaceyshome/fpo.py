@@ -70,8 +70,8 @@ def test_filter_in():
     def is_odd(v):
         return v % 2 == 1
     nums = [1,2,3,4,5]
-    assert FPO.filter_in(fn=is_odd, arr=nums) == [1,3,5]
-    
+    assert FPO.filter_in(fn=is_odd, l=nums) == [1,3,5]
+
 def test_filter_dict_in():
     def is_odd(v):
         return v % 2 == 1
@@ -82,8 +82,8 @@ def test_filter_out():
     def is_odd(v):
         return v % 2 == 1
     nums = [1,2,3,4,5]
-    assert FPO.filter_out(fn=is_odd, arr=nums) == [2,4]
-    
+    assert FPO.filter_out(fn=is_odd, l=nums) == [2,4]
+
 def test_filter_out_dict():
     def is_odd(v):
         return v % 2 == 1
@@ -92,9 +92,9 @@ def test_filter_out_dict():
 
 # def test_apply():
 def test_pluck():
-    arr = [{'x': 1, 'y':2}, {'x': 3, 'y': 4}]
-    assert FPO.pluck(arr, 'x', 'y') == [[1, 2], [3, 4]]
-    assert FPO.pluck(arr, 'x') == [1, 3]
+    l = [{'x': 1, 'y':2}, {'x': 3, 'y': 4}]
+    assert FPO.pluck(l, 'x', 'y') == [[1, 2], [3, 4]]
+    assert FPO.pluck(l, 'x') == [1, 3]
 
 def test_take():
     items = [2,4,6,8,10]
