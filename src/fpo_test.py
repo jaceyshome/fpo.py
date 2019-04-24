@@ -102,10 +102,14 @@ def test_flat_map_dict():
     nums = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
     assert split_evens_in_half(v=3, key='c') == 3
     assert split_evens_in_half(v=4, key='d') == {'d':2, 'd_2': 2 }
+
     assert FPO.map_dict(fn=split_evens_in_half, d=nums) == {'a': 1, 'b': {'b': 1, 'b_2': 1}, 'c': 3, 'd': {'d': 2, 'd_2': 2}}
+
     assert FPO.flat_map_dict(fn=split_evens_in_half, d=nums) == {'a': 1, 'b': 1, 'b_2': 1, 'c': 3, 'd': 2, 'd_2': 2}
 
+
 def test_flatten():
+
     nums = [1,2,[3,4],[5,[6,7]]]
     assert FPO.flatten(l=nums) == [1,2,3,4,5,6,7]
     assert FPO.flatten(l=nums,n=1) == [1, 2, 3, 4, 5, [6, 7]]
@@ -128,6 +132,16 @@ def test_map_dict():
     nums = {'a': 1, 'b': 2, 'c': 3}
     assert FPO.map_dict(fn=double,d=nums) == {'a': 2, 'b': 4, 'c': 6}
 
+def test_n_ary():
+    def foo(d): return d
+    f = FPO.n_ary(fn=foo, props=['x','y','z'])
+    assert f({'x': 1, 'y': 2, 'z': 3, 'w': 4}) == {'x': 1, 'y': 2, 'z': 3}
+
+def test_partial():
+    def foo(x,y,z): return x + y + z
+    f = FPO.partial(fn=foo, args={'x': 'a'});
+    assert f(y='b', z='c') == 'abc'
+
 def test_pluck():
     l = [{'x': 1, 'y':2}, {'x': 3, 'y': 4}]
     assert FPO.pluck(l, 'x', 'y') == [[1, 2], [3, 4]]
@@ -142,6 +156,14 @@ def test_memoise():
     assert fa(2,3) == cached_a
     cached_b = fb(2,3)
     assert fb(2,4) == cached_b
+
+def test_pick():
+    d = {'x': 1, 'y': 2, 'z': 3, 'w': 4}
+    assert FPO.pick(d,props=['x','y']) == {'x': 1, 'y': 2}
+
+def test_pick_all():
+    d = {'x': 1, 'y': 2, 'z': 3, 'w': 4}
+    assert FPO.pick_all(d,props=['x','y','r']) == {'x': 1, 'y': 2, 'r': None}
 
 def test_take():
     items = [2,4,6,8,10]

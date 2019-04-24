@@ -500,7 +500,14 @@ Warning: Be aware that if 1 is initially specified (or detected) for n, addition
 ###Returns:
     list
 ###Example:
-    
+    def sum(x,y):
+        return x + y + random.randint(1,101)
+    fa = FPO.memoise(fn=sum)
+    fb = FPO.memoise(fn=sum, n=1)
+    cached_a = fa(2,3)
+    assert fa(2,3) == cached_a
+    cached_b = fb(2,3)
+    assert fb(2,4) == cached_b
 '''
 def memoise(fn,n=-1):
     cache = {}
@@ -516,6 +523,99 @@ def memoise(fn,n=-1):
             cache[key] = fn(*args, **kwargs)
             return cache[key]
     return memoised
+
+
+
+'''
+##FPO.n_ary(...)
+Wraps a function to restrict its inputs to only the named arguments as specified. It is similar to FPO.pluck.
+###Arguments:
+    fn:     function to wrap
+    props:  list of property names to allow as named arguments; if empty, produces a "nullary" function -- won't receive any arguments.
+###Returns:
+    function
+###Example:
+    
+'''
+def n_ary(fn,props):
+    def n_aried(d):
+        if bool(props) is not True:
+            return fn()
+        else:
+            r = {}
+            for key in props:
+                r[key] = d[key]
+            return fn(r)
+    return n_aried
+
+
+
+'''
+##FPO.partial(...)
+Wraps a function with a new function that already has some of the arguments pre-specified, and is waiting for the rest of them on the next call. Unlike FPO.curry(..), you must specify all the remaining arguments on the next call of the partially-applied function.
+
+With traditional FP libraries, partial(..) works in left-to-right order (as does FPO.std.partial(..)). That's why typically you also need a FPO.std.partialRight(..) if you want to partially-apply from the opposite direction.
+
+However, using named arguments style -- after all, that is the whole point of FPO! -- order doesn't matter. For familiarity sake, FPO.partialRight(..) is provided, but it's just an alias to FPO.partial(..).
+###Arguments:
+    fn:     function to partially-apply
+    args:   object containing the arguments to apply now
+###Returns:
+    function
+###Example:
+    def foo(x,y,z): return x + y + z
+    f = FPO.partial(fn=foo, args={'x': 'a'});
+    assert f(y='b', z='c') == 'abc'
+'''
+def partial(fn, args):
+    def partialed(**kwargs):
+        l_kwargs = kwargs.copy()
+        l_kwargs.update(args)
+        return fn(**l_kwargs)
+    return partialed
+
+
+
+'''
+##FPO.pick(...)
+Returns a new dictionary with only the specified properties from the original dictionary. Includes only properties from the original dictionary.
+###Arguments:
+    d:      dictionary to pick properties from
+    props:  list of property names to pick from the object; if a property does not exist on the original dictionary, it is not added to the new dictionary, unlike FPO.pickAll(..).
+###Returns:
+    dictionary
+###Example:
+    d = {'x': 1, 'y': 2, 'z': 3, 'w': 4}
+    assert FPO.pick(d,props=['x','y']) == {'x': 1, 'y': 2}
+'''
+def pick(d,props):
+    r = {}
+    for i in props:
+        if i in d:
+            r[i] = d[i]
+    return r
+
+
+
+'''
+##FPO.pick_all(...)
+Returns a new dictionary with only the specified properties from the original dictionary. Includes all specified properties.
+###Arguments:
+    d:      dictionary to pick properties from
+    props:  list of property names to pick from the dictionary; even if a property does not exist on the original dictionary, it is still added to the new object with an undefined value, unlike FPO.pick(..).
+###Returns:
+    dictionary
+###Example:
+    
+'''
+def pick_all(d, props):
+    r = {}
+    for i in props:
+        if i in d:
+            r[i] = d[i]
+        else:
+            r[i] = None
+    return r
 
 
 
@@ -540,6 +640,10 @@ def pluck(l, *args):
         return [v[0] for v in r]
     else:
         return r
+
+
+
+    
 
 
 
