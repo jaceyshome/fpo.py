@@ -345,7 +345,7 @@ def flat_map(fn,l):
     t = list(map(fn, l))
     is_all_elements_are_list = True
     for e in t:
-        if isinstance(e, (list,)) is not True:
+        if isinstance(e, list) is not True:
             is_all_elements_are_list = False
     if is_all_elements_are_list is True:
         r = []
@@ -359,6 +359,111 @@ chain = flat_map
 
 
 '''
+##FPO.flat_map_dict(...)
+
+###Arguments:
+    fn:     mapper function; called with v (value), i (property name), and d (dictionary) named arguments
+    d:      dictionary to flat-map against
+###Returns:
+    dictionary
+###Aliases:
+    FPO.chain_dict(..)
+###Example:
+    def split_evens_in_half(v, key):
+        if v % 2 == 0:
+        return { key: v/2, key+'_2': v/2 }
+    return v
+    nums = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+    assert split_evens_in_half(v=3, key='c') == 3
+    assert split_evens_in_half(v=4, key='d') == {'d':2, 'd_2': 2 }
+    assert FPO.map_dict(fn=split_evens_in_half, d=nums) == {'a': 1, 'b': {'b': 1, 'b_2': 1}, 'c': 3, 'd': {'d': 2, 'd_2': 2}}
+    assert FPO.flat_map_dict(fn=split_evens_in_half, d=nums) == {'a': 1, 'b': 1, 'b_2': 1, 'c': 3, 'd': 2, 'd_2': 2}
+'''
+def flat_map_dict(fn,d):
+    dd = map_dict(fn,d)
+    r = {}
+    for key,v in dd.items():
+        if isinstance(v, dict) is True:
+            r.update(v)
+        else:
+            r[key] = v
+    return r
+chain_dict = flat_map_dict
+
+
+
+'''
+##FPO.flatten(...)
+Flattens an array of nested arrays. Optionally, specify how many levels of nesting to flatten out.
+###Arguments:
+    l:   list to flat-map against
+    n:   (optional) the number of levels of nesting to flatten out; if omitted, defaults to Infinity (to flatten any nested depth)
+###Returns:
+    list
+###Example:
+    nums = [1,2,[3,4],[5,[6,7]]]
+    assert FPO.flatten(l=nums) == [1,2,3,4,5,6,7]
+    assert FPO.flatten(l=nums,n=1) == [1, 2, 3, 4, 5, [6, 7]]
+'''
+def flatten(l, n=-1):
+    if n is 0: return l 
+    r = []
+    for e in l:
+        if isinstance(e, list) is True:
+            r += flatten(e, n=(n-1))
+        else:
+            r.append(e)
+    return r
+
+
+
+'''
+##FPO.head(...)
+Returns the element as accessed at index 0 of the value.
+###Arguments:
+    v:   list, tuple, dict, str
+###Returns:
+    any
+###Example:
+    nums = [1,2,3,4]
+    assert FPO.head(v={'a':42,'b':56}) == 42
+    assert FPO.head(v=nums) == 1
+    assert FPO.head(v=(42,56)) == 42
+    assert FPO.head(v='abc') == 'a'
+    assert FPO.head(v=[]) == None
+    assert FPO.head(v={}) == None
+    assert FPO.head(v='') == None
+'''
+# https://docs.python.org/2/library/stdtypes.html#truth-value-testing
+def head(v):
+    if bool(v) is not True:
+        return None
+    elif isinstance(v, dict) is True:
+        return next(iter(v.values()))
+    elif isinstance(v, (list, tuple)) is True:
+        return v[0]
+    elif isinstance(v, str) is True:
+        return list(v)[0]
+
+
+
+'''
+##FPO.identity(...)
+Returns the value given to it. Useful as a default placeholder for certain opertaions (i.e., composition, reduction).
+###Arguments:
+    d:   list
+###Returns:
+    any
+###Example:
+
+###See also: FPO.constant(...)
+'''
+def identity(d):
+    return next(iter(d.values()))
+
+
+
+'''
 ##FPO.map_dict(...)
 Produces a new dictionary by calling a mapper function with each property value in the original dictionary. The value the mapper function returns is inserted in the new object at that same property name. The new dictionary will always have the same number of properties as the original dictionary.
 ###Arguments:
@@ -367,7 +472,9 @@ Produces a new dictionary by calling a mapper function with each property value 
 ###Returns:
     dictionary
 ###Example:
-
+    def double(v, key): return v * 2
+    nums = {'a': 1, 'b': 2, 'c': 3}
+    assert FPO.map_dict(fn=double,d=nums) == {'a': 2, 'b': 4, 'c': 6}
 '''
 def map_dict(fn, d):
     r = {}
@@ -378,20 +485,28 @@ def map_dict(fn, d):
 
 
 '''
-##FPO.flat_map_dict(...)
-Similar to FPO.mapObj(..), produces a new object by calling a mapper function with each property value in the original object. If the mapper function returns an object, this object is flattened (one level) into the overall object, by copying its properties.
+##FPO.memoize(...)
+For performance optimization reasons, wraps a function such that it remembers each set of arguments passed to it, associated with that underlying return value. If the wrapped function is called subsequent times with the same set of arguments, the cached return value is returned instead of being recomputed. Each wrapped function instance has its own separate cache, even if wrapping the same original function multiple times.
+
+A set of arguments is "remembered" by being hashed to a string value to use as a cache key. This hashing is done internally with JSON.stringify(..), which is fast and works with many common JS value types. However, this hashing is by no means bullet-proof for all types, and does not guarantee collision-free. Use caution: generally, you should only use primitives (number, string, boolean, null, and undefined) or simple objects (object, array) as arguments. If you use objects, always make sure to list properties in the same order to ensure proper hashing.
+
+By default, the function's arity (fn.length) will be detected as n. However, in JS certain techniques thwart this detection, such as the use of default parameters or parameter destructuring. Make sure to specify the correct n if detection is uncertain or unreliable.
+
+Unary functions (single argument; n of 1) with a primitive argument are the fastest for memoization, so if possible, try to design functions that way. In these cases, specifying n as 1 will help ensure the best possible performance.
+
+Warning: Be aware that if 1 is initially specified (or detected) for n, additional arguments later passed to the wrapped function are not considered in the memoization hashing, though they will still be passed to the underlying function as-is. This may cause unexpected results (false-positives on cache hits); always make sure n matches the expected number of arguments.
 ###Arguments:
-    fn:     mapper function; called with v (value), i (property name), and d (dictionary) named arguments
-    d:   dictionary to flat-map against
+    fn: function to wrap
+    n:  number of arguments to memoize; if omitted, tries to detect the arity (fn.length) to use.
 ###Returns:
-    dictionary
-###Aliases:
-    FPO.chain_dict(..)
+    list
 ###Example:
+    def double(v, key): return v * 2
+    nums = {'a': 1, 'b': 2, 'c': 3}
+    assert FPO.map_dict(fn=double,d=nums) == {'a': 2, 'b': 4, 'c': 6}
 '''
-def flat_map_dict(fn, d):
+def memoize(fn,n):
     pass
-chain_obj = flat_map_dict
 
 
 

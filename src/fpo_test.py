@@ -8,7 +8,6 @@ def test_ap():
     nums = [1,2,3,4,5]
     assert FPO.ap([fn1, fn2], nums) == [2, 3, 4, 5, 6, 2, 4, 6, 8, 10]
 
-
 def test_apply():
     def foo(x, y=2): return x + y
     def bar(a, b, c=0): return a + b + c
@@ -104,6 +103,25 @@ def test_flat_map_dict():
     assert split_evens_in_half(v=3, key='c') == 3
     assert split_evens_in_half(v=4, key='d') == {'d':2, 'd_2': 2 }
     assert FPO.map_dict(fn=split_evens_in_half, d=nums) == {'a': 1, 'b': {'b': 1, 'b_2': 1}, 'c': 3, 'd': {'d': 2, 'd_2': 2}}
+    assert FPO.flat_map_dict(fn=split_evens_in_half, d=nums) == {'a': 1, 'b': 1, 'b_2': 1, 'c': 3, 'd': 2, 'd_2': 2}
+
+def test_flatten():
+    nums = [1,2,[3,4],[5,[6,7]]]
+    assert FPO.flatten(l=nums) == [1,2,3,4,5,6,7]
+    assert FPO.flatten(l=nums,n=1) == [1, 2, 3, 4, 5, [6, 7]]
+
+def test_head():
+    nums = [1,2,3,4]
+    assert FPO.head(v={'a':42,'b':56}) == 42
+    assert FPO.head(v=nums) == 1
+    assert FPO.head(v=(42,56)) == 42
+    assert FPO.head(v='abc') == 'a'
+    assert FPO.head(v=[]) == None
+    assert FPO.head(v={}) == None
+    assert FPO.head(v='') == None
+
+def test_identity():
+    FPO.identity( {'v': 42} ) == 42
 
 def test_map_dict():
     def double(v, key): return v * 2
