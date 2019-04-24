@@ -18,7 +18,6 @@ def test_apply():
     assert f({'x': 3}) == 5
     assert p({'x': 3, 'y': 2}) == 5
 
-
 def test_binary():
     def foo(x,y): return x + y
     def bar(a,b,c=1): return a + b + c
@@ -26,7 +25,6 @@ def test_binary():
     p = FPO.binary(fn=bar, props=['a','b'])
     assert f({'x':1, 'y':2, 'z':4}) == 3
     assert p({'a':2,'b':4,'c':6}) == 7
-
 
 def test_complement():
     def foo(x,y): return x > y
@@ -98,16 +96,20 @@ def test_flat_map():
     assert FPO.flat_map(fn=split_chars, l=words) == ['h','e','l','l','o','w','o','r','l','d']
 
 def test_flat_map_dict():
-    def split_evens_in_half(v, i):
+    def split_evens_in_half(v, key):
         if v % 2 == 0:
-            return { i: v/2, i+'_2': v/2 }
+            return { key: v/2, key+'_2': v/2 }
         return v
     nums = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
-    assert split_evens_in_half(v=3, i='c') == 3
-    assert split_evens_in_half(v=4, i='d') == {'d':2, 'd_2': 2 }
-# TODO mapObj
+    assert split_evens_in_half(v=3, key='c') == 3
+    assert split_evens_in_half(v=4, key='d') == {'d':2, 'd_2': 2 }
+    assert FPO.map_dict(fn=split_evens_in_half, d=nums) == {'a': 1, 'b': {'b': 1, 'b_2': 1}, 'c': 3, 'd': {'d': 2, 'd_2': 2}}
 
-# def test_apply():
+def test_map_dict():
+    def double(v, key): return v * 2
+    nums = {'a': 1, 'b': 2, 'c': 3}
+    assert FPO.map_dict(fn=double,d=nums) == {'a': 2, 'b': 4, 'c': 6}
+
 def test_pluck():
     l = [{'x': 1, 'y':2}, {'x': 3, 'y': 4}]
     assert FPO.pluck(l, 'x', 'y') == [[1, 2], [3, 4]]

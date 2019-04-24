@@ -335,6 +335,11 @@ Similar to FPO.map(..), produces a new list by calling a mapper function with ea
 ###Aliases:
     FPO.chain(..)
 ###Example:
+    def split_chars(v): return [*v]
+    words = ['hello','world']
+    assert split_chars(v=words[0]) == ['h','e','l','l','o']
+    assert list(map(split_chars, words)) == [['h','e','l','l','o'],['w','o','r','l','d']]
+    assert FPO.flat_map(fn=split_chars, l=words) == ['h','e','l','l','o','w','o','r','l','d']
 '''
 def flat_map(fn,l):
     t = list(map(fn, l))
@@ -354,6 +359,25 @@ chain = flat_map
 
 
 '''
+##FPO.map_dict(...)
+Produces a new dictionary by calling a mapper function with each property value in the original dictionary. The value the mapper function returns is inserted in the new object at that same property name. The new dictionary will always have the same number of properties as the original dictionary.
+###Arguments:
+    fn:     mapper function; called with v (value), i (index), and d (dictionary) named arguments
+    d:   dictionary to-map against
+###Returns:
+    dictionary
+###Example:
+
+'''
+def map_dict(fn, d):
+    r = {}
+    for key, v in d.items():
+        r[key] = fn(v=v,key=key)
+    return r
+
+
+
+'''
 ##FPO.flat_map_dict(...)
 Similar to FPO.mapObj(..), produces a new object by calling a mapper function with each property value in the original object. If the mapper function returns an object, this object is flattened (one level) into the overall object, by copying its properties.
 ###Arguments:
@@ -368,6 +392,7 @@ Similar to FPO.mapObj(..), produces a new object by calling a mapper function wi
 def flat_map_dict(fn, d):
     pass
 chain_obj = flat_map_dict
+
 
 
 '''
