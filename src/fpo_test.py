@@ -1,6 +1,6 @@
 import pytest
 import fpo as FPO
-
+import random
 
 def test_ap():
     fn1 = lambda v:  v + 1
@@ -132,6 +132,16 @@ def test_pluck():
     l = [{'x': 1, 'y':2}, {'x': 3, 'y': 4}]
     assert FPO.pluck(l, 'x', 'y') == [[1, 2], [3, 4]]
     assert FPO.pluck(l, 'x') == [1, 3]
+
+def test_memoise():
+    def sum(x,y):
+        return x + y + random.randint(1,101)
+    fa = FPO.memoise(fn=sum)
+    fb = FPO.memoise(fn=sum, n=1)
+    cached_a = fa(2,3)
+    assert fa(2,3) == cached_a
+    cached_b = fb(2,3)
+    assert fb(2,4) == cached_b
 
 def test_take():
     items = [2,4,6,8,10]

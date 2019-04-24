@@ -1,3 +1,4 @@
+import json
 
 '''
 ##FPO.ap(...)
@@ -328,7 +329,7 @@ keep_dict = filter_out_dict
 ##FPO.flat_map(...)
 Similar to FPO.map(..), produces a new list by calling a mapper function with each value in the original list. If the mapper function returns a list, this list is flattened (one level) into the overall list.
 ###Arguments:
-    fn:     mapper function; called with v (value), i (index), and list(l) named arguments
+    fn:  mapper function; called with v (value), i (index), and list(l) named arguments
     l:   list to flat-map against
 ###Returns:
     list
@@ -488,25 +489,33 @@ def map_dict(fn, d):
 ##FPO.memoize(...)
 For performance optimization reasons, wraps a function such that it remembers each set of arguments passed to it, associated with that underlying return value. If the wrapped function is called subsequent times with the same set of arguments, the cached return value is returned instead of being recomputed. Each wrapped function instance has its own separate cache, even if wrapping the same original function multiple times.
 
-A set of arguments is "remembered" by being hashed to a string value to use as a cache key. This hashing is done internally with JSON.stringify(..), which is fast and works with many common JS value types. However, this hashing is by no means bullet-proof for all types, and does not guarantee collision-free. Use caution: generally, you should only use primitives (number, string, boolean, null, and undefined) or simple objects (object, array) as arguments. If you use objects, always make sure to list properties in the same order to ensure proper hashing.
+A set of arguments is "remembered" by being hashed to a string value to use as a cache key. This hashing is done internally with json.dumps(..), which is fast and works with many common value types. However, this hashing is by no means bullet-proof for all types, and does not guarantee collision-free. Use caution: generally, you should only use primitives (number, string, boolean, null, and None) or simple objects (dict, list) as arguments. If you use objects, always make sure to list properties in the same order to ensure proper hashing.
 
-By default, the function's arity (fn.length) will be detected as n. However, in JS certain techniques thwart this detection, such as the use of default parameters or parameter destructuring. Make sure to specify the correct n if detection is uncertain or unreliable.
+Unary functions (single argument; n of 1) with a primitive argument are the fastest for memoisation, so if possible, try to design functions that way. In these cases, specifying n as 1 will help ensure the best possible performance.
 
-Unary functions (single argument; n of 1) with a primitive argument are the fastest for memoization, so if possible, try to design functions that way. In these cases, specifying n as 1 will help ensure the best possible performance.
-
-Warning: Be aware that if 1 is initially specified (or detected) for n, additional arguments later passed to the wrapped function are not considered in the memoization hashing, though they will still be passed to the underlying function as-is. This may cause unexpected results (false-positives on cache hits); always make sure n matches the expected number of arguments.
+Warning: Be aware that if 1 is initially specified (or detected) for n, additional arguments later passed to the wrapped function are not considered in the memoisation hashing, though they will still be passed to the underlying function as-is. This may cause unexpected results (false-positives on cache hits); always make sure n matches the expected number of arguments.
 ###Arguments:
     fn: function to wrap
     n:  number of arguments to memoize; if omitted, tries to detect the arity (fn.length) to use.
 ###Returns:
     list
 ###Example:
-    def double(v, key): return v * 2
-    nums = {'a': 1, 'b': 2, 'c': 3}
-    assert FPO.map_dict(fn=double,d=nums) == {'a': 2, 'b': 4, 'c': 6}
+    
 '''
-def memoize(fn,n):
-    pass
+def memoise(fn,n=-1):
+    cache = {}
+    def memoised(*args, **kwargs):
+        nonlocal cache
+        if bool(args) is True:
+            key = json.dumps(take(args, n) if n > 0 else args, sort_keys=True, separators=(',',':'))
+        else:
+            key = json.dumps(take(kwargs, n) if n > 0 else kwargs, sort_keys=True, separators=(',',':'))
+        if key in cache:
+            return cache[key]
+        else:
+            cache[key] = fn(*args, **kwargs)
+            return cache[key]
+    return memoised
 
 
 
