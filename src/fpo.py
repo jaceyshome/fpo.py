@@ -122,7 +122,7 @@ def compose(fns):
     def composed(v):
         result = v
         for fn in reversed(fns):
-            result = fn(result)
+            result = fn(v=result)
         return result
     return composed
 
@@ -130,9 +130,9 @@ def compose(fns):
 
 '''
 ##FPO.constant(...)
-Wraps a value in a function that returns the value.
+Wraps a value in a fureversed
 ###Arguments:
-    v:     constant value
+    v:     constant vreversed
 ###Returns:
     function
 ###Example:
@@ -328,7 +328,7 @@ keep_dict = filter_out_dict
 
 '''
 ##FPO.flat_map(...)
-Similar to FPO.map(..), produces a new list by calling a mapper function with each value in the original list. If the mapper function returns a list, this list is flattened (one level) into the overall list.
+Similar to map(..), produces a new list by calling a mapper function with each value in the original list. If the mapper function returns a list, this list is flattened (one level) into the overall list.
 ###Arguments:
     fn:  mapper function; called with v (value), i (index), and list(l) named arguments
     l:   list to flat-map against
@@ -482,6 +482,24 @@ def map_dict(fn, d):
     r = {}
     for key, v in d.items():
         r[key] = fn(v=v,key=key)
+    return r
+
+
+'''
+##FPO.map_list(...)
+Produces a new list by calling a mapper function with each value in the original list. The value the mapper function returns is inserted in the new list at that same position. The new list will always be the same length as the original list.
+###Arguments:
+    fn: mapper function; called with v (value) and l (list) named arguments
+    l:  list to map against
+###Returns: 
+    list
+###Example:
+
+'''
+def map_list(fn, l):
+    r = []
+    for v in l:
+        r.append(fn(v=v))
     return r
 
 
@@ -640,7 +658,7 @@ def pipe(fns):
     def piped(v):
         result = v
         for fn in fns:
-            result = fn(result)
+            result = fn(v=result)
         return result
     return piped
 
@@ -659,7 +677,6 @@ Plucks properties form the given list and return a list of properties' values
     assert FPO.pluck(l, 'x', 'y') == [[1, 2], [3, 4]]
     assert FPO.pluck(l, 'x') == [1, 3]
 '''
-# pluck = lambda d, *args: [d[arg] for arg in args]
 def pluck(l, *args):
     fn = lambda d, *args: [d[arg] for arg in args]
     r = [fn(o, *args) for o in l]
@@ -696,7 +713,9 @@ Like a mixture between FPO.pick(..) and FPO.setProp(..), creates a new dictionar
 ###Returns:
     dictionary
 ###Example:
-
+    obj = dict(zip(['x','y','z'],[1, 2, 3]))
+    assert FPO.reassoc(d=obj, props={'x': 'a', 'y': 'b'}) == {'a': 1, 'b': 2, 'z': 3}
+    assert obj == {'x': 1, 'y': 2, 'z': 3}
 '''
 def reassoc(d,props):
     r = {}
@@ -710,6 +729,122 @@ def reassoc(d,props):
 
 
 '''
+##FPO.reduce(..)
+Processes a list from left-to-right (unlike FPO.reduceRight(..)), successively combining (aka "reducing", "folding") two values into one, until the entire list has been reduced to a single value. An initial value for the reduction can optionally be provided.
+###Arguments:
+    fn: reducer function; called with acc (accumulator), v (value) and l (list) named arguments
+    l:  list to reduce
+    v:  (optional) initial value to use for the reduction; if provided, the first reduction will pass to the reducer the initial value as the acc and the first value from the array as v. Otherwise, the first reduction has the first value of the array as acc and the second value of the array as v.
+###Returns: 
+    any
+###Example:
+    def str_concat(acc,v):
+        return acc + v
+    vowels = ["a","e","i","o","u","y"]
+    assert FPO.reduce(fn=str_concat, l=vowels) == 'aeiouy'
+    assert FPO.reduce(fn=str_concat, l=vowels, v='vowels: ') == 'vowels: aeiouy'
+    assert vowels == ["a","e","i","o","u","y"]
+'''
+def reduce(fn,l,v=None):
+    r = l[0]
+    for e in l[1:]:
+        r = fn(acc=r, v=e)
+    if bool(v) is True:
+        return v + r
+    return r
+
+
+
+'''
+##FPO.reduce_dict(..)
+Processes an dictionary's properties (in enumeration order), successively combining (aka "reducing", "folding") two values into one, until all the dictionary's properties have been reduced to a single value. An initial value for the reduction can optionally be provided.
+###Arguments:
+    fn: reducer function; called with acc (accumulator), v (value) and l (list) named arguments
+    d:  dictionary to reduce
+    v:  (optional) initial value to use for the reduction; if provided, the first reduction will pass to the reducer the initial value as the acc and the first value from the array as v. Otherwise, the first reduction has the first value of the array as acc and the second value of the array as v.
+###Returns: 
+    any
+###Example:
+    def str_concat(acc,v):
+        return acc + v
+    vowels = ["a","e","i","o","u","y"]
+    assert FPO.reduce(fn=str_concat, l=vowels) == 'aeiouy'
+    assert FPO.reduce(fn=str_concat, l=vowels, v='vowels: ') == 'vowels: aeiouy'
+    assert vowels == ["a","e","i","o","u","y"]
+'''
+def reduce_dict(fn,d,v=None):
+    init_k = next(iter(d))
+    r = d[init_k]
+    for key,value in d.items():
+        if key is not init_k:
+            r = fn(acc=r, v=value)
+    if bool(v) is True:
+        return v + r
+    return r
+
+
+
+'''
+##FPO.reduce_right(..)
+Processes a list from right-to-left (unlike FPO.reduce(..)), successively combining (aka "reducing", "folding") two values into one, until the entire list has been reduced to a single value.
+An initial value for the reduction can optionally be provided. If the array is empty, the initial value is returned (or undefined if it was omitted).
+###Arguments:
+    fn: reducer function; called with acc (accumulator), v (value) and l (list) named arguments
+    l:  list to reduce
+    v:  (optional) initial value to use for the reduction; if provided, the first reduction will pass to the reducer the initial value as the acc and the first value from the array as v. Otherwise, the first reduction has the first value of the array as acc and the second value of the array as v.
+###Returns: 
+    any
+###Example:
+    def str_concat(acc,v):
+        return acc + v
+    vowels = ["a","e","i","o","u","y"]
+    assert FPO.reduce_right(fn=str_concat, l=vowels) == 'yuoiea'
+    assert FPO.reduce_right(fn=str_concat, l=vowels, v='vowels: ') == 'vowels: yuoiea'
+    assert vowels == ["a","e","i","o","u","y"]
+'''
+def reduce_right(fn,l,v=None):
+    rl = l[::-1]
+    r = rl[0]
+    for e in rl[1:]:
+        r = fn(acc=r, v=e)
+    if bool(v) is True:
+        return v + r
+    return r
+
+
+
+'''
+##FPO.remap(..)
+Remaps the expected named arguments of a function. This is useful to adapt a function to be used if the arguments passed in will be different than what the function expects.
+A common usecase will be to adapt a function so it's suitable for use as a mapper/predicate/reducer function, or for composition.
+###Arguments:
+    fn:     function to remap
+    args:   dictionary whose key/value pairs represent the origArgName: newArgName mappings
+###Returns: 
+    function
+###Example:
+    def double(x): return x * 2 
+    def increment(y): return y + 1
+    def div3(z): return z / 3
+    f = FPO.remap(fn=double, args=dict(v='x'))
+    g = FPO.remap(fn=increment, args=dict(v='y'))
+    h = FPO.remap(fn=div3, args=dict(v='z'))
+    m = FPO.compose(fns=[h,g,f])
+    assert f(v=3) == 6
+    assert m(v=4) == 3
+    assert FPO.map_list(g, [1,4,7,10,13]) == [2,5,8,11,14]
+    assert FPO.map_list(m, [1,4,7,10,13]) == [1,3,5,7,9]
+'''
+def remap(fn, args):
+    def remaped(**kwargs):
+        print('AAAA', kwargs)
+        l_kwargs = reassoc(kwargs,props=args)
+        return fn(**l_kwargs)
+    return remaped
+
+
+
+'''
 ##FPO.set_prop(...)
 Creates a shallow clone of a dictionary, assigning the specified property value to the new dictionary.
 ###Arguments:
@@ -719,7 +854,7 @@ Creates a shallow clone of a dictionary, assigning the specified property value 
 ###Returns:
     any
 ###Example:
-    obj = {'x': 1, 'y': 2, 'z': 3}
+    obj = dict(x=1, y=2,z=3)
     assert FPO.set_prop(d=obj, prop='w', v=4) == {'x': 1, 'y': 2, 'z': 3, 'w': 4}
     assert obj == {'x': 1, 'y': 2, 'z': 3}
 '''

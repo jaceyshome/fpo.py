@@ -130,6 +130,11 @@ def test_map_dict():
     nums = {'a': 1, 'b': 2, 'c': 3}
     assert FPO.map_dict(fn=double,d=nums) == {'a': 2, 'b': 4, 'c': 6}
 
+def test_map_list():
+    def double(v): return v * 2
+    nums = [1,2,3]
+    assert FPO.map_list(fn=double,l=nums) == [2,4,6]
+
 def test_memoise():
     def sum(x,y):
         return x + y + random.randint(1,101)
@@ -176,12 +181,49 @@ def test_prop():
     assert FPO.prop(d=obj, prop='y') == 2
 
 def test_reassoc():
-    obj = {'x': 1, 'y': 2, 'z': 3}
+    obj = dict(zip(['x','y','z'],[1, 2, 3]))
     assert FPO.reassoc(d=obj, props={'x': 'a', 'y': 'b'}) == {'a': 1, 'b': 2, 'z': 3}
     assert obj == {'x': 1, 'y': 2, 'z': 3}
 
+def test_reduce():
+    def str_concat(acc,v):
+        return acc + v
+    vowels = ["a","e","i","o","u","y"]
+    assert FPO.reduce(fn=str_concat, l=vowels) == 'aeiouy'
+    assert FPO.reduce(fn=str_concat, l=vowels, v='vowels: ') == 'vowels: aeiouy'
+    assert vowels == ["a","e","i","o","u","y"]
+
+def test_reduce_dict():
+    def str_concat(acc,v):
+        return acc + v
+    vowels = dict(a='a', b='e', c='i', d='o', e='u', f='y')
+    assert FPO.reduce_dict(fn=str_concat, d=vowels) == 'aeiouy'
+    assert FPO.reduce_dict(fn=str_concat, d=vowels, v='vowels: ') == 'vowels: aeiouy'
+    assert vowels == {'a':'a', 'b':'e', 'c':'i', 'd':'o', 'e':'u', 'f':'y'}
+
+def test_reduce_right():
+    def str_concat(acc,v):
+        return acc + v
+    vowels = ["a","e","i","o","u","y"]
+    assert FPO.reduce_right(fn=str_concat, l=vowels) == 'yuoiea'
+    assert FPO.reduce_right(fn=str_concat, l=vowels, v='vowels: ') == 'vowels: yuoiea'
+    assert vowels == ["a","e","i","o","u","y"]
+
+def test_remap():
+    def double(x): return x * 2 
+    def increment(y): return y + 1
+    def div3(z): return z / 3
+    f = FPO.remap(fn=double, args=dict(v='x'))
+    g = FPO.remap(fn=increment, args=dict(v='y'))
+    h = FPO.remap(fn=div3, args=dict(v='z'))
+    m = FPO.compose(fns=[h,g,f])
+    assert f(v=3) == 6
+    assert m(v=4) == 3
+    assert FPO.map_list(g, [1,4,7,10,13]) == [2,5,8,11,14]
+    assert FPO.map_list(m, [1,4,7,10,13]) == [1,3,5,7,9]
+
 def test_set_prop():
-    obj = {'x': 1, 'y': 2, 'z': 3}
+    obj = dict(x=1, y=2,z=3)
     assert FPO.set_prop(d=obj, prop='w', v=4) == {'x': 1, 'y': 2, 'z': 3, 'w': 4}
     assert obj == {'x': 1, 'y': 2, 'z': 3}
 
