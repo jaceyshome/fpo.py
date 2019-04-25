@@ -1,4 +1,5 @@
 import json
+import copy
 
 '''
 ##FPO.ap(...)
@@ -569,7 +570,7 @@ However, using named arguments style -- after all, that is the whole point of FP
 '''
 def partial(fn, args):
     def partialed(**kwargs):
-        l_kwargs = kwargs.copy()
+        l_kwargs = copy.copy(kwargs)
         l_kwargs.update(args)
         return fn(**l_kwargs)
     return partialed
@@ -606,7 +607,8 @@ Returns a new dictionary with only the specified properties from the original di
 ###Returns:
     dictionary
 ###Example:
-    
+    d = {'x': 1, 'y': 2, 'z': 3, 'w': 4}
+    assert FPO.pick_all(d,props=['x','y','r']) == {'x': 1, 'y': 2, 'r': None}
 '''
 def pick_all(d, props):
     r = {}
@@ -616,6 +618,31 @@ def pick_all(d, props):
         else:
             r[i] = None
     return r
+
+
+
+'''
+##FPO.pipe(...)
+Produces a new function that's the composition of a list of functions. Functions are composed left-to-right (unlike FPO.compose(..)) from the array.
+###Arguments:
+    fns:    list of funcitons
+###Returns:
+    function
+###Example:
+    f = FPO.pipe([
+        lambda v: v+2,
+        lambda v: v*2,
+        lambda v: v-2,
+    ])
+    assert f(10) == 22
+'''
+def pipe(fns):
+    def piped(v):
+        result = v
+        for fn in fns:
+            result = fn(result)
+        return result
+    return piped
 
 
 
@@ -643,7 +670,66 @@ def pluck(l, *args):
 
 
 
+'''
+##FPO.prop(...)
+Extracts a property's value from a dictionary.
+###Arguments:
+    d:    dictionary to pull the property value from
+    prop: property name to pull from the dictionary
+###Returns:
+    any
+###Example:
+    obj = {'x': 1, 'y': 2, 'z': 3, 'w': 4}
+    assert FPO.prop(d=obj, prop='y') == 2
+'''
+def prop(d,prop):
+    return d[prop]
     
+
+
+'''
+##FPO.reassoc(...)
+Like a mixture between FPO.pick(..) and FPO.setProp(..), creates a new dictionary that has properties remapped from original names to new names. Any properties present on the original dictionary that aren't remapped are copied with the same name.
+###Arguments:
+    d:      dictionary to remap properties from
+    props:  dictionary whose key/value pairs are sourceProp: targetProp remappings
+###Returns:
+    dictionary
+###Example:
+
+'''
+def reassoc(d,props):
+    r = {}
+    for k,v in d.items():
+        if k in props:
+            r[props[k]] = d[k]
+        else:
+            r[k] = d[k]
+    return r
+
+
+
+'''
+##FPO.set_prop(...)
+Creates a shallow clone of a dictionary, assigning the specified property value to the new dictionary.
+###Arguments:
+    d:      (optional) object to clone; if omitted, defaults to a new empty dictionary
+    prop:   property name where to set the value on the new dictionary
+    v:      value
+###Returns:
+    any
+###Example:
+    obj = {'x': 1, 'y': 2, 'z': 3}
+    assert FPO.set_prop(d=obj, prop='w', v=4) == {'x': 1, 'y': 2, 'z': 3, 'w': 4}
+    assert obj == {'x': 1, 'y': 2, 'z': 3}
+'''
+def set_prop(d,prop,v):
+    if bool(d) is True:
+        r = copy.copy(d)
+    else:
+        r = {}
+    r[prop] = v
+    return r
 
 
 
