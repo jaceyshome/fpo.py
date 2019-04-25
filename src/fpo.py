@@ -837,7 +837,6 @@ A common usecase will be to adapt a function so it's suitable for use as a mappe
 '''
 def remap(fn, args):
     def remaped(**kwargs):
-        print('AAAA', kwargs)
         l_kwargs = reassoc(kwargs,props=args)
         return fn(**l_kwargs)
     return remaped
@@ -869,9 +868,41 @@ def set_prop(d,prop,v):
 
 
 '''
+##FPO.tail(...)
+Returns everything else in the value except the element as accessed at index 0; basically the inverse of FPO.head(..)
+###Arguments:
+    v:   list/string/dictionary
+###Returns:
+    any
+###Example:
+    assert FPO.tail(v={'a':42,'b':56,'c':34}) == {'b':56,'c':34}
+    assert FPO.tail(v=[1,2,3,4]) == [2,3,4]
+    assert FPO.tail(v=(42,56,32)) == (56,32)
+    assert FPO.tail(v='abc') == 'bc'
+    assert FPO.tail(v=[]) == None
+    assert FPO.tail(v={}) == None
+    assert FPO.tail(v='') == None
+'''
+def tail(v):
+    if bool(v) is not True:
+        return None
+    elif isinstance(v, dict) is True:
+        init_k = next(iter(v))
+        r = {}
+        for key,value in v.items():
+            if key is not init_k:
+                r[key] = value
+        return r
+    elif isinstance(v, (list, tuple)) is True:
+        return v[1:]
+    elif isinstance(v, str) is True:
+        return v[1:]
+
+
+
+'''
 ##FPO.take(...)
 Returns the specified number of elements from the value, starting from the beginning.
-
 ###Arguments:
     iterable:   list/string
     n:          number of elements to take from the beginning of the value; if omitted, defaults to `1`

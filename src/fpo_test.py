@@ -113,9 +113,8 @@ def test_flatten():
     assert FPO.flatten(l=nums,n=1) == [1, 2, 3, 4, 5, [6, 7]]
 
 def test_head():
-    nums = [1,2,3,4]
     assert FPO.head(v={'a':42,'b':56}) == 42
-    assert FPO.head(v=nums) == 1
+    assert FPO.head(v=[1,2,3,4]) == 1
     assert FPO.head(v=(42,56)) == 42
     assert FPO.head(v='abc') == 'a'
     assert FPO.head(v=[]) == None
@@ -226,6 +225,15 @@ def test_set_prop():
     obj = dict(x=1, y=2,z=3)
     assert FPO.set_prop(d=obj, prop='w', v=4) == {'x': 1, 'y': 2, 'z': 3, 'w': 4}
     assert obj == {'x': 1, 'y': 2, 'z': 3}
+
+def test_tail():
+    assert FPO.tail(v={'a':42,'b':56,'c':34}) == {'b':56,'c':34}
+    assert FPO.tail(v=[1,2,3,4]) == [2,3,4]
+    assert FPO.tail(v=(42,56,32)) == (56,32)
+    assert FPO.tail(v='abc') == 'bc'
+    assert FPO.tail(v=[]) == None
+    assert FPO.tail(v={}) == None
+    assert FPO.tail(v='') == None
 
 def test_take():
     items = [2,4,6,8,10]
