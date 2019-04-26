@@ -408,7 +408,7 @@ Flattens an array of nested arrays. Optionally, specify how many levels of nesti
     assert FPO.flatten(l=nums,n=1) == [1, 2, 3, 4, 5, [6, 7]]
 '''
 def flatten(l, n=-1):
-    if n is 0: return l 
+    if n is 0: return l
     r = []
     for e in l:
         if isinstance(e, list) is True:
@@ -491,7 +491,7 @@ Produces a new list by calling a mapper function with each value in the original
 ###Arguments:
     fn: mapper function; called with v (value) and l (list) named arguments
     l:  list to map against
-###Returns: 
+###Returns:
     list
 ###Example:
 
@@ -554,7 +554,7 @@ Wraps a function to restrict its inputs to only the named arguments as specified
 ###Returns:
     function
 ###Example:
-    
+
 '''
 def n_ary(fn,props):
     def n_aried(d):
@@ -701,7 +701,7 @@ Extracts a property's value from a dictionary.
 '''
 def prop(d,prop):
     return d[prop]
-    
+
 
 
 '''
@@ -735,7 +735,7 @@ Processes a list from left-to-right (unlike FPO.reduceRight(..)), successively c
     fn: reducer function; called with acc (accumulator), v (value) and l (list) named arguments
     l:  list to reduce
     v:  (optional) initial value to use for the reduction; if provided, the first reduction will pass to the reducer the initial value as the acc and the first value from the array as v. Otherwise, the first reduction has the first value of the array as acc and the second value of the array as v.
-###Returns: 
+###Returns:
     any
 ###Example:
     def str_concat(acc,v):
@@ -762,7 +762,7 @@ Processes an dictionary's properties (in enumeration order), successively combin
     fn: reducer function; called with acc (accumulator), v (value) and l (list) named arguments
     d:  dictionary to reduce
     v:  (optional) initial value to use for the reduction; if provided, the first reduction will pass to the reducer the initial value as the acc and the first value from the array as v. Otherwise, the first reduction has the first value of the array as acc and the second value of the array as v.
-###Returns: 
+###Returns:
     any
 ###Example:
     def str_concat(acc,v):
@@ -792,7 +792,7 @@ An initial value for the reduction can optionally be provided. If the array is e
     fn: reducer function; called with acc (accumulator), v (value) and l (list) named arguments
     l:  list to reduce
     v:  (optional) initial value to use for the reduction; if provided, the first reduction will pass to the reducer the initial value as the acc and the first value from the array as v. Otherwise, the first reduction has the first value of the array as acc and the second value of the array as v.
-###Returns: 
+###Returns:
     any
 ###Example:
     def str_concat(acc,v):
@@ -820,10 +820,10 @@ A common usecase will be to adapt a function so it's suitable for use as a mappe
 ###Arguments:
     fn:     function to remap
     args:   dictionary whose key/value pairs represent the origArgName: newArgName mappings
-###Returns: 
+###Returns:
     function
 ###Example:
-    def double(x): return x * 2 
+    def double(x): return x * 2
     def increment(y): return y + 1
     def div3(z): return z / 3
     f = FPO.remap(fn=double, args=dict(v='x'))
@@ -913,7 +913,6 @@ Returns the specified number of elements from the value, starting from the begin
     assert FPO.take(items, 3) == [2,4,6]
     assert FPO.take(items) == [2]
     assert FPO.take({'apple','banana','cherry'}, 2) == ['apple','banana']
-###
 '''
 def take(iterable, n=1):
     r = []
@@ -931,3 +930,23 @@ def take(iterable, n=1):
         return r
 
 
+
+'''
+##FPO.trampoline(...)
+Wraps a continuation-returning recursive function in another function that will run it until it no longer returns another continuation function. Trampolines are an alternative to tail calls.
+###Arguments:
+    fn:     function to run
+###Returns:
+    function
+###Example:
+'''
+def trampoline(fn):
+    def trampolined(*args, **kwargs):
+        if bool(args):
+            r = fn(*args)
+        else:
+            r = fn(**kwargs)
+        while callable(r) is True:
+            r = r()
+        return r
+    return trampolined

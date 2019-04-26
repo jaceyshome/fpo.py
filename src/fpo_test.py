@@ -209,7 +209,7 @@ def test_reduce_right():
     assert vowels == ["a","e","i","o","u","y"]
 
 def test_remap():
-    def double(x): return x * 2 
+    def double(x): return x * 2
     def increment(y): return y + 1
     def div3(z): return z / 3
     f = FPO.remap(fn=double, args=dict(v='x'))
@@ -240,3 +240,10 @@ def test_take():
     assert FPO.take(items, 3) == [2,4,6]
     assert FPO.take(items) == [2]
     assert FPO.take('hello world', 5) == 'hello'
+
+def test_trampoline():
+    def sum(total,x):
+        if x <= 1:
+            return total + x
+        return lambda : sum(total+x, x-1)
+    assert FPO.trampoline(fn=sum)(0,5) == 15
