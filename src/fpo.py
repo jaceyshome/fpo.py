@@ -745,13 +745,15 @@ Processes a list from left-to-right (unlike FPO.reduceRight(..)), successively c
     assert FPO.reduce(fn=str_concat, l=vowels, v='vowels: ') == 'vowels: aeiouy'
     assert vowels == ["a","e","i","o","u","y"]
 '''
-def reduce(fn,l,v=None):
-    r = l[0]
-    for e in l[1:]:
-        r = fn(acc=r, v=e)
-    if bool(v) is True:
-        return v + r
-    return r
+def reduce(fn,l=[],v=None):
+    orig_l = l
+    initial_v = v
+    if initial_v is None and len(l) > 0:
+        initial_v = l[0]
+        l = l[1:]
+    for e in l:
+        initial_v = fn(acc=initial_v, v=e)
+    return initial_v
 
 
 
@@ -963,7 +965,7 @@ def trampoline(fn):
 A reducer function. For transducing purposes, a combination function that takes an array and a value, and mutates the array by pushing the value onto the end of it. The mutated array is returned.
 *This function has side-effects*, for performance reasons. It should be used with caution.
 ###Arguments:
-    acc:    acculumator
+    acc:    accumulator
     v:  value
 ###Returns:
     list
@@ -982,7 +984,7 @@ def transducer_list(acc,v):
 ##FPO.transducer_bool_and(...)
 A reducer function. For transducing purposes, a combination function that takes two booleans and ANDs them together. The result is the logical AND of the two values.
 ###Arguments:
-    acc:    acculumator
+    acc:    accumulator
     v:  value
 ###Returns:
     true/false
@@ -1002,7 +1004,7 @@ def transducer_bool_and(acc,v):
 ##FPO.transducer_bool_or(...)
 A reducer function. For transducing purposes, a combination function that takes two booleans and ORs them together. The result is the logical OR of the two values.
 ###Arguments:
-    acc:    acculumator
+    acc:    accumulator
     v:  value
 ###Returns:
     true/false
@@ -1023,7 +1025,7 @@ def transducer_bool_or(acc,v):
 ##FPO.transducer_default(...)
 A reducer function. For transducing purposes, a combination function that's a default placeholder. It returns only the acc that's passed to it. The behavior here is almost the same as FPO.identity(..), except that returns acc instead of v.
 ###Arguments:
-    acc:    acculumator
+    acc:    accumulator
     v:  value
 ###Returns:
     any
@@ -1032,43 +1034,6 @@ A reducer function. For transducing purposes, a combination function that's a de
 '''
 def transducer_default(acc,v):
     return acc
-
-
-
-'''
-##FPO.transducer_filter(...)
-For transducing purposes, wraps a predicate function as a filter-transducer. Typically, this filter-transducer is then composed with other filter-transducers and/or map-transducers. The resulting transducer is then passed to FPO.transducers.transduce(..).
-###Arguments:
-    fn:    predicate function
-###Returns:
-    function
-###Example:
-
-'''
-# def transducer_filter_fn(**kwargs):
-#     predicated_fn = kwargs['fn']
-#     if 'v' in kwargs.keys():
-#         combination_fn = kwargs['v']
-
-#     #till waiting on the combination function?
-#     if 'v' in kwargs.keys() != True:
-#         #Note: the combination function is usually a composed
-# 		#function, so we expect the argument by itself,
-# 		#not wrapped in a dictionary
-#         print('AAAAA')
-#         def curried(v):
-#             nonlocal predicated_fn
-#             return transducer_filter_fn(fn=predicated_fn,v=v)
-#         return curried
-
-#     def reducer(acc,v):
-#         nonlocal predicated_fn, combination_fn
-#         if predicated_fn(v):
-#             return combination_fn(acc, v)
-#         return acc
-#     return reducer
-
-# transducer_filter = curry_multiple(fn=transducer_filter_fn, n=1)
 
 
 
@@ -1085,13 +1050,94 @@ Note: When composing transducers, the effective order of operations is reversed 
     any
 Example:
 '''
-# def transduce_fn(fn,co,v,l=[]):
-#     transducer = fn
-#     combination_fn = co
-#     initial_value = v
-#     reducer = transducer(v=combination_fn)
-#     return reduce(fn=reducer, v=initial_value, l=l)
-# transducer_transduce = curry_multiple(fn=transduce_fn, n=1)
+def transduce_fn(fn,co,v,l=[]):
+    transducer = fn
+    combination_fn = co
+    initial_value = v
+    reducer = transducer(v=combination_fn)
+    return reduce(fn=reducer, v=initial_value, l=l)
+transducer_transduce = curry_multiple(fn=transduce_fn, n=4)
+
+
+
+'''
+##FPO.transducer_map(...)
+For transducing purposes, wraps a mapper function as a map-transducer. Typically, this map-transducer is then composed with other filter-transducers and/or map-transducers. The resulting transducer is then passed to FPO.transducers.transduce(..).
+The map-transducer is not a reducer itself; it's expecting a combination function (reducer), which will then produce a filter-reducer. So alternately, you can manually create the map-reducer and use it directly with a regular FPO.reduce(..) reduction.
+###Arguments:
+    fn: mapper function
+###Returns:
+    function
+###Example:
+    def double(v):
+        return v * 2
+    def array_push(acc, v):
+        acc.append(v)
+        return acc
+    nums = [1,2,3,4,5]
+    map_transducer = FPO.transducer_map(fn=double)
+    r = FPO.transducer_transduce(
+        fn=map_transducer,
+        co=array_push,
+        v=[],
+        l=nums
+    )
+    assert r == [2,4,6,8,10]
+    map_reducer = map_transducer(v=array_push)
+    assert map_reducer(acc=[], v=3) == [6]
+    assert FPO.reduce(fn=map_reducer,v=[],l=nums) == [2,4,6,8,10]
+'''
+def transducer_map_fn(fn,v=None):
+    mapper_fn = fn
+    combination_fn = v
+    #till waiting on the combination function?
+    if combination_fn is None:
+        #Note: the combination function is usually a composed
+        #function, so we expect the argument by itself,
+        #not wrapped in a dictionary
+        def curried(v):
+            nonlocal mapper_fn
+            return transducer_map_fn(fn=mapper_fn,v=v)
+        return curried
+
+    def reducer(acc,v):
+        nonlocal mapper_fn, combination_fn
+        return combination_fn(acc,v=mapper_fn(v))
+    return reducer
+transducer_map = curry_multiple(fn=transducer_map_fn, n=1)
+
+
+
+'''
+##FPO.transducer_filter(...)
+For transducing purposes, wraps a predicate function as a filter-transducer. Typically, this filter-transducer is then composed with other filter-transducers and/or map-transducers. The resulting transducer is then passed to FPO.transducers.transduce(..).
+###Arguments:
+    fn:    predicate function
+###Returns:
+    function
+###Example:
+
+'''
+# def transducer_filter_fn(fn,v=None):
+#     predicated_fn = fn
+#     combination_fn = v
+#     #till waiting on the combination function?
+#     if combination_fn is None:
+#         #Note: the combination function is usually a composed
+#         #function, so we expect the argument by itself,
+#         #not wrapped in a dictionary
+#         def curried(v):
+#             nonlocal predicated_fn
+#             return transducer_map_fn(fn=predicated_fn,v=v)
+#         return curried
+
+#     def reducer(acc,v):
+#         nonlocal predicated_fn, combination_fn
+#         if predicated_fn(v):
+#             return combination_fn(acc, v)
+#         return acc
+#     return reducer
+# transducer_filter = curry_multiple(fn=transducer_filter_fn, n=1)
 
 
 

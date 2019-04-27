@@ -290,6 +290,25 @@ def test_transducer_default():
 #         ]
 #     )
 
+def test_transducer_map():
+    def double(v):
+        return v * 2
+    def array_push(acc, v):
+        acc.append(v)
+        return acc
+    nums = [1,2,3,4,5]
+    map_transducer = FPO.transducer_map(fn=double)
+    r = FPO.transducer_transduce(
+        fn=map_transducer,
+        co=array_push,
+        v=[],
+        l=nums
+    )
+    assert r == [2,4,6,8,10]
+    map_reducer = map_transducer(v=array_push)
+    assert map_reducer(acc=[], v=3) == [6]
+    assert FPO.reduce(fn=map_reducer,v=[],l=nums) == [2,4,6,8,10]
+
 def test_unapply():
     def foo(x,y):
         return x + y
