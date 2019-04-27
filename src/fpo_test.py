@@ -301,3 +301,10 @@ def test_unary():
         return kwargs
     f = FPO.unary(fn=foo, prop='y')
     assert f(x=1,y=2,z=3) == {'y':2}
+
+def test_uncurry():
+    def foo(x,y,z):
+        return x + y + z
+    f = FPO.curry(fn=foo, n=3)
+    p = FPO.uncurry(fn=f)
+    assert p(x=1,y=2,z=3) == 6

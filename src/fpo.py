@@ -1127,7 +1127,10 @@ Wraps a function to restrict its inputs to only one named argument as specified.
 ###Returns:
     function
 ###Example:
-
+    def foo(**kwargs):
+        return kwargs
+    f = FPO.unary(fn=foo, prop='y')
+    assert f(x=1,y=2,z=3) == {'y':2}
 '''
 def unary(fn,prop):
     def unary_fn(**kwargs):
@@ -1135,3 +1138,23 @@ def unary(fn,prop):
         l_kwargs[prop] = kwargs[prop]
         return fn(**l_kwargs)
     return unary_fn
+
+
+
+'''
+##FPO.uncurry(...)
+Wraps a (strictly) curried function in a new function that accepts all the arguments at once, and provides them one at a time to the underlying curried function.
+###Arguments:
+    fn: function to uncurry
+###Returns:
+    function
+Example:
+'''
+def uncurry(fn):
+    def uncurry_fn(**kwargs):
+        print('AAAA', kwargs)
+        r = fn
+        for key,v in kwargs.items():
+            r = r(**{key:v})
+        return r
+    return uncurry_fn
