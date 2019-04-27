@@ -939,6 +939,11 @@ Wraps a continuation-returning recursive function in another function that will 
 ###Returns:
     function
 ###Example:
+    def sum(total,x):
+        if x <= 1:
+        return total + x
+    return lambda : sum(total+x, x-1)
+    assert FPO.trampoline(fn=sum)(0,5) == 15
 '''
 def trampoline(fn):
     def trampolined(*args, **kwargs):
@@ -950,3 +955,161 @@ def trampoline(fn):
             r = r()
         return r
     return trampolined
+
+
+
+'''
+##FPO.transducer_list(...)
+A reducer function. For transducing purposes, a combination function that takes an array and a value, and mutates the array by pushing the value onto the end of it. The mutated array is returned.
+*This function has side-effects*, for performance reasons. It should be used with caution.
+###Arguments:
+    acc:    acculumator
+    v:  value
+###Returns:
+    list
+###Example:
+    arr = [1,2,3]
+    FPO.transducer_list(acc=arr,v=4)
+    assert arr == [1,2,3,4]
+'''
+def transducer_list(acc,v):
+    acc.append(v)
+    return acc
+
+
+
+'''
+##FPO.transducer_bool_and(...)
+A reducer function. For transducing purposes, a combination function that takes two booleans and ANDs them together. The result is the logical AND of the two values.
+###Arguments:
+    acc:    acculumator
+    v:  value
+###Returns:
+    true/false
+###Example:
+    assert FPO.transducer_bool_and(acc=True, v=True) == True
+    assert FPO.transducer_bool_and(acc=False, v=True) == False
+'''
+def transducer_bool_and(acc,v):
+    if bool(acc) and bool(v) is True:
+        return True
+    else:
+        return False
+
+
+
+'''
+##FPO.transducer_bool_or(...)
+A reducer function. For transducing purposes, a combination function that takes two booleans and ORs them together. The result is the logical OR of the two values.
+###Arguments:
+    acc:    acculumator
+    v:  value
+###Returns:
+    true/false
+###Example:
+    assert FPO.transducer_bool_or(acc=True, v=True) == True
+    assert FPO.transducer_bool_or(acc=False, v=False) == False
+    assert FPO.transducer_bool_or(acc=False, v=True) == True
+'''
+def transducer_bool_or(acc,v):
+    if bool(acc) or bool(v) is True:
+        return True
+    else:
+        return False
+
+    
+
+'''
+##FPO.transducer_default(...)
+A reducer function. For transducing purposes, a combination function that's a default placeholder. It returns only the acc that's passed to it. The behavior here is almost the same as FPO.identity(..), except that returns acc instead of v.
+###Arguments:
+    acc:    acculumator
+    v:  value
+###Returns:
+    any
+###Example:
+    assert FPO.transducer_default(acc=3, v=1) == 3
+'''
+def transducer_default(acc,v):
+    return acc
+
+
+
+'''
+##FPO.transducer_filter(...)
+For transducing purposes, wraps a predicate function as a filter-transducer. Typically, this filter-transducer is then composed with other filter-transducers and/or map-transducers. The resulting transducer is then passed to FPO.transducers.transduce(..).
+###Arguments:
+    fn:    predicate function
+###Returns:
+    function
+###Example:
+
+'''
+# def transducer_filter_fn(**kwargs):
+#     predicated_fn = kwargs['fn']
+#     if 'v' in kwargs.keys():
+#         combination_fn = kwargs['v']
+
+#     #till waiting on the combination function?
+#     if 'v' in kwargs.keys() != True:
+#         #Note: the combination function is usually a composed
+# 		#function, so we expect the argument by itself,
+# 		#not wrapped in a dictionary
+#         print('AAAAA')
+#         def curried(v):
+#             nonlocal predicated_fn
+#             return transducer_filter_fn(fn=predicated_fn,v=v)
+#         return curried
+    
+#     def reducer(acc,v):
+#         nonlocal predicated_fn, combination_fn
+#         if predicated_fn(v):
+#             return combination_fn(acc, v)
+#         return acc
+#     return reducer
+
+# transducer_filter = curry_multiple(fn=transducer_filter_fn, n=1)
+
+
+
+'''
+##FPO.transducer_transduce(...)
+Produces a reducer from a specified transducer and combination function. Then runs a reduction on a list, using that reducer, starting with the specified initial value.
+Note: When composing transducers, the effective order of operations is reversed from normal composition. Instead of expecting composition to be right-to-left, the effective order will be left-to-right (see below).
+###Arguments:
+    fn: transducer function
+    co: combination function for the transducer
+    v: initial value for the reduction
+    l: the list for the reduction
+###Returns: 
+    any
+Example:
+'''
+# def transduce_fn(fn,co,v,l=[]):
+#     transducer = fn
+#     combination_fn = co
+#     initial_value = v
+#     reducer = transducer(v=combination_fn)
+#     return reduce(fn=reducer, v=initial_value, l=l)
+# transducer_transduce = curry_multiple(fn=transduce_fn, n=1)
+
+
+
+'''
+##FPO.unapply(..)
+Wraps a function to gather individual positional arguments into an object argument.
+###Arguments:
+    fn:     function to wrap
+    props:  list of property names (strings) to indicate the order to gather individual positional arguments as properties.
+###Returns: 
+    function
+Example:
+
+'''
+def unapply(fn, props):
+    
+    def unapplied(*args):
+        g = zip(props,args)
+        kwargs = dict(g)
+        return fn(**kwargs)
+    return unapplied

@@ -247,3 +247,51 @@ def test_trampoline():
             return total + x
         return lambda : sum(total+x, x-1)
     assert FPO.trampoline(fn=sum)(0,5) == 15
+
+def test_transducer_list():
+    arr = [1,2,3]
+    FPO.transducer_list(acc=arr,v=4)
+    assert arr == [1,2,3,4]
+
+def test_transducer_bool_and():
+    assert FPO.transducer_bool_and(acc=True, v=True) == True
+    assert FPO.transducer_bool_and(acc=False, v=True) == False
+
+def test_transducer_bool_or():
+    assert FPO.transducer_bool_or(acc=True, v=True) == True
+    assert FPO.transducer_bool_or(acc=False, v=False) == False
+    assert FPO.transducer_bool_or(acc=False, v=True) == True
+
+def test_transducer_default():
+    assert FPO.transducer_default(acc=3, v=1) == 3
+
+# def test_transducer_filter():
+#     def is_odd(v):
+#         return v % 2 == 1
+#     def list_push(acc, v):
+#         acc.append(v)
+#         return acc
+#     nums = [1,2,3,4,5]
+#     filter_transducer = FPO.transducer_filter(fn=is_odd)
+#     r = FPO.transducer_transduce(fn=filter_transducer, co=list_push, v=[], l=nums)
+#     assert r == [1,3,5]
+
+# def test_transducer_transduce():
+#     def double(v):
+#         return v * 2
+#     def is_odd(v):
+#         return v % 2 == 1
+#     def list_push(acc, v):
+#         acc.append(v)
+#         return acc
+#     nums = [1,2,3,4,5]
+#     transducer = FPO.compose(
+#         fns=[
+#         ]
+#     )
+
+def test_unapply():
+    def foo(x,y):
+        return x + y
+    f = FPO.unapply(fn=foo, props=['x','y'])
+    assert f(1,2) == f
