@@ -1,0 +1,4145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.5.3" />
+<title>fpo API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.name small{font-weight:normal}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase;cursor:pointer}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title"><code>fpo</code> module</h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">import json
+import copy
+
+def ap(fns, list):
+    &#39;&#39;&#39;
+    ## FPO.ap(...)
+    Produces a new list that is a concatenation of sub-lists, each produced by calling FPO.map(..) with each mapper function and the main list.
+    ### Arguments:
+        fns:   a list of functions
+        list:  a list
+    ### Returns:
+        a list of new values
+    ### Example:
+        fn1 = lambda increment(v) { return v + 1 }
+        def double(v) { return v * 2 }
+        nums = [1,2,3,4,5]
+    ### Reference:
+        # https://treyhunner.com/2015/12/python-list-comprehensions-now-in-color/
+    &#39;&#39;&#39;
+    matrix = [[fn(v) for v in list] for fn in fns]
+    return [n for row in matrix for n in row]
+
+
+
+def apply(fn, props=None):
+    &#39;&#39;&#39;
+    ## FPO.apply(...)
+    Wraps a function to spread out the properties from an object arugment as individual positional arguments
+    ### Arguments:
+        fn:     function to wrap
+        props:  (optional) list of property names (strings) to indicate the order to spread properties as individual arguments. If omitted, the signature of fn is parsed for its parameter list to try to determine an ordered property list; this detection only works for simple parameters (including those with default parameter value settings).
+    ### Returns:
+        function
+    ### Example:
+        def foo(x, y=2): return x + y
+        def bar(a, b, c=0): return a + b + c
+        f = FPO.apply(fn=foo)
+        p = FPO.apply(fn=bar, props=[&#39;x&#39;,&#39;y&#39;])
+        assert f({&#39;a&#39;: 1, &#39;b&#39;:1}) == 2
+        assert f({&#39;x&#39;: 3}) == 5
+        assert p({&#39;x&#39;: 3, &#39;y&#39;: 2}) == 5
+    &#39;&#39;&#39;
+    def applied(d):
+        if props is None:
+            return fn(*(d[key] for key,v in d.items()))
+        return fn(*(d[key] for key in props))
+    return applied
+
+
+
+def binary(fn,props):
+    &#39;&#39;&#39;
+    ## FPO.binary(...)
+    Wraps a function to restrict its inputs to dictionary with only two named arguments as specified.
+
+    ### Arguments:
+        fn:     function to wrap
+        props:  list of two property names to allow as named arguments
+    ### Returns:
+        function
+    ### Example:
+        def foo(x,y): return x + y
+        def bar(a,b,c=1): return a + b + c
+        f = FPO.binary(fn=foo, props=[&#39;x&#39;,&#39;y&#39;])
+        p = FPO.binary(fn=bar, props=[&#39;a&#39;,&#39;b&#39;])
+        assert f({&#39;x&#39;:1, &#39;y&#39;:2, &#39;z&#39;:4}) == 3
+        assert p({&#39;a&#39;:2,&#39;b&#39;:4,&#39;c&#39;:6}) == 7
+    &#39;&#39;&#39;
+    _props = props[slice(0,2)]
+    ln = lambda d, props: {key:d[key] for key in props}
+    def binaryFn(d):
+        return fn(**ln(d, _props))
+    return binaryFn
+
+
+
+def complement(fn):
+    &#39;&#39;&#39;
+    ## FPO.complement(...)
+    Wraps a predicate function -- a function that produces true / false -- to negate its result.
+    ### Arguments:
+        fn:     function to wrap
+    ### Returns:
+        function
+    ### Example:
+        def foo(x,y): return x &gt; y
+        def bar(): return True
+        f = FPO.complement(foo)
+        p = FPO.complement(bar)
+        assert foo(3,2) == True
+        assert f(3,2) == False
+        assert bar() == True
+        assert p() == False
+    &#39;&#39;&#39;
+    def complemented(*arg):
+        return False if fn(*arg) is True else True
+    return complemented
+
+
+
+def compose(fns):
+    &#39;&#39;&#39;
+    ## FPO.compose(...)
+    Produces a new function that&#39;s the composition of a list of functions. Functions are composed right-to-left (unlike FPO.pipe(..)) from the list.
+    ### Arguments:
+        fns:     list of (lambda)functions
+    ### Returns:
+        function
+    ### Example:
+        f = FPO.compose([
+            lambda v: v+2,
+            lambda v: v*2,
+            lambda v: v-2,
+        ])
+        assert f(10) == 18
+    &#39;&#39;&#39;
+    def composed(v):
+        result = v
+        for fn in reversed(fns):
+            result = fn(v=result)
+        return result
+    return composed
+
+
+
+def constant(v):
+    &#39;&#39;&#39;
+    ## FPO.constant(...)
+    Wraps a value in a fureversed
+    ### Arguments:
+        v:     constant vreversed
+    ### Returns:
+        function
+    ### Example:
+        f = FPO.constant(12)
+        assert f() == 12
+        assert f(24,9) == 12
+        assert f(24) == 12
+    &#39;&#39;&#39;
+    def fn(*arg):
+        return v
+    return fn
+
+
+
+def curry(fn, n):
+    &#39;&#39;&#39;
+    ## FPO.curry(...)
+    Curries a function so that you can pass one argument at a time, each time getting back another function to receive the next argument. Once all arguments are passed, the underlying function is called with the arguments.
+
+    Unlike FPO.curryMultiple(..), you can only pass one property argument at a time to each curried function (see example below). If multiple properties are passed to a curried call, only the first property (in enumeration order) will be passed.
+    ### Arguments:
+        fn:     function to curry
+        n:      number of arguments to curry for
+    ### Returns:
+        function
+    ### Example:
+        def foo(x,y,z):
+            return x + y + z
+        f = FPO.curry(fn=foo, n=3)
+        v = f(x=1)()(y=2, z=3)(z=4)
+        assert v == 7
+    &#39;&#39;&#39;
+    f_args = []
+    f_kwargs = {}
+    def curried(*args, **kwargs):
+        nonlocal f_args, f_kwargs
+        if args:
+            f_args += args[0]
+            if len(f_args) is n:
+                return fn(*f_args)
+            return curried
+        elif kwargs:
+            key = list(kwargs)[0]
+            f_kwargs[key] = kwargs[key]
+            if len(f_kwargs) is n:
+                return fn(**f_kwargs)
+            return curried
+        else:
+            return curried
+    return curried
+
+
+
+def curry_multiple(fn, n):
+    &#39;&#39;&#39;
+    ## FPO.curry_multiple(...)
+    Just like FPO.curry(..), except each curried function allows multiple arguments instead of just one.
+
+    Unlike FPO.curryMultiple(..), you can only pass one property argument at a time to each curried function (see example below). If multiple properties are passed to a curried call, only the first property (in enumeration order) will be passed.
+    ### Arguments:
+        fn:     function to curry
+        n:      number of arguments to curry for
+    ### Returns:
+        function
+    ### Example:
+        def foo(x,y,z):
+            return x + y + z
+        f = FPO.curry_multiple(fn=foo, n=3)
+        v = f(x=0,y=1)()(x=1)(y=2,z=3)
+        assert v == 6
+    &#39;&#39;&#39;
+    f_args = []
+    f_kwargs = {}
+    def curried(*args, **kwargs):
+        nonlocal f_args, f_kwargs
+        if args or kwargs:
+            f_args += args
+            f_kwargs.update(kwargs)
+            if len(f_args) is n or len(f_kwargs) is n:
+                return fn(*f_args, **f_kwargs)
+            return curried
+        else:
+            return curried
+    return curried
+
+
+
+def filter_in(fn,l):
+    &#39;&#39;&#39;
+    ## FPO.filter_in(...)
+    Commonly known as filter(..), produces a new list by calling a predicate function with each value in the original list. For each value, if the predicate function returns true (or truthy), the value is included in (aka, filtered into) the new list. Otherwise, the value is omitted.
+    It is the same as python filter() method
+    ### Arguments:
+        fn:     predicate function; called with v (value), i (index), and l (list) named arguments
+        l:    list to filter against
+    ### Returns:
+        list
+    ### Aliases:
+        FPO.keep(..)
+    ### Example:
+        def is_odd(v):
+            return v % 2 == 1
+        nums = [1,2,3,4,5]
+        assert FPO.filter_in(fn=is_odd, l=nums) == [1,3,5]
+    &#39;&#39;&#39;
+    r = []
+    for e in l:
+        if fn(e):
+           r.append(e)
+    return r
+keep = filter_in
+
+
+
+def filter_in_dict(fn, d):
+    &#39;&#39;&#39;
+    ## FPO.filter_in_dict(...)
+    Produces a new dictionary by calling a predicate function with each property value in the original dictionary. For each value, if the predicate function returns true (or truthy), the value is included in (aka, filtered into) the new object at the same property name. Otherwise, the value is omitted.
+    ### Arguments:
+        fn:     predicate function; called with v (value), i (property name), and o (object) named arguments
+        d:      dictionary to filter against
+    ### Returns:
+        dictionary
+    ### Aliases:
+        FPO.keep_dict(..)
+    ### Example:
+        def is_odd(v):
+            return v % 2 == 1
+        nums = {&#39;x&#39;:1,&#39;y&#39;:2,&#39;z&#39;:3,&#39;r&#39;:4,&#39;l&#39;:5}
+        assert FPO.filter_in_dict(fn=is_odd, d=nums) == {&#39;x&#39;:1,&#39;z&#39;:3,&#39;l&#39;:5}
+    &#39;&#39;&#39;
+    r = {}
+    for key,v in d.items():
+        if fn(v):
+            r[key] = v
+    return r
+keep_dict = filter_in_dict
+
+
+
+def filter_out(fn,l):
+    &#39;&#39;&#39;
+    ## FPO.filter_out(...)
+    The inverse of FPO.filterIn(..), produces a new list by calling a predicate function with each value in the original list. For each value, if the predicate function returns true (or truthy), the value is omitted from (aka, filtered out of) the new list. Otherwise, the value is included.
+    ### Arguments:
+        fn:     predicate function; called with v (value), i (index), and l (list) named arguments
+        l:    list to filter against
+    ### Returns:
+        list
+    ### Aliases:
+        FPO.reject(..)
+    ### Example:
+        def is_odd(v):
+            return v % 2 == 1
+        nums = [1,2,3,4,5]
+        assert FPO.filter_out(fn=is_odd, l=nums) == [2,4]
+    &#39;&#39;&#39;
+    r = []
+    for e in l:
+        if fn(e) is not True:
+           r.append(e)
+    return r
+reject = filter_out
+
+
+
+def filter_out_dict(fn, d):
+    &#39;&#39;&#39;
+    ## FPO.filter_out_dict(...)
+    The inverse of FPO.filterInObj(..), produces a new dictionary by calling a predicate function with each property value in the original dictionary. For each value, if the predicate function returns true (or truthy), the value is omitted from (aka, filtered out of) the new object. Otherwise, the value is included at the same property name.
+    ### Arguments:
+        fn:     predicate function; called with v (value), i (property name), and o (object) named arguments
+        d:      dictionary to filter against
+    ### Returns:
+        dictionary
+    ### Aliases:
+        FPO.reject_dict(..)
+    ### Example:
+        def is_odd(v):
+            return v % 2 == 1
+        nums = {&#39;x&#39;:1,&#39;y&#39;:2,&#39;z&#39;:3,&#39;r&#39;:4,&#39;l&#39;:5}
+        assert FPO.filter_out_dict(fn=is_odd, d=nums) == {&#39;y&#39;:2,&#39;r&#39;:4}
+    &#39;&#39;&#39;
+    r = {}
+    for key,v in d.items():
+        if fn(v) != True:
+            r[key] = v
+    return r
+keep_dict = filter_out_dict
+
+
+
+def flat_map(fn,l):
+    &#39;&#39;&#39;
+    ## FPO.flat_map(...)
+    Similar to map(..), produces a new list by calling a mapper function with each value in the original list. If the mapper function returns a list, this list is flattened (one level) into the overall list.
+    ### Arguments:
+        fn:  mapper function; called with v (value), i (index), and list(l) named arguments
+        l:   list to flat-map against
+    ### Returns:
+        list
+    ### Aliases:
+        FPO.chain(..)
+    ### Example:
+        def split_chars(v): return [*v]
+        words = [&#39;hello&#39;,&#39;world&#39;]
+        assert split_chars(v=words[0]) == [&#39;h&#39;,&#39;e&#39;,&#39;l&#39;,&#39;l&#39;,&#39;o&#39;]
+        assert list(map(split_chars, words)) == [[&#39;h&#39;,&#39;e&#39;,&#39;l&#39;,&#39;l&#39;,&#39;o&#39;],[&#39;w&#39;,&#39;o&#39;,&#39;r&#39;,&#39;l&#39;,&#39;d&#39;]]
+        assert FPO.flat_map(fn=split_chars, l=words) == [&#39;h&#39;,&#39;e&#39;,&#39;l&#39;,&#39;l&#39;,&#39;o&#39;,&#39;w&#39;,&#39;o&#39;,&#39;r&#39;,&#39;l&#39;,&#39;d&#39;]
+    &#39;&#39;&#39;
+    t = list(map(fn, l))
+    is_all_elements_are_list = True
+    for e in t:
+        if isinstance(e, list) is not True:
+            is_all_elements_are_list = False
+    if is_all_elements_are_list is True:
+        r = []
+        for e in t:
+            r += &#39;&#39;.join(e)
+        return r
+    else:
+        return t
+chain = flat_map
+
+
+
+def flat_map_dict(fn,d):
+    &#39;&#39;&#39;
+    ## FPO.flat_map_dict(...)
+    ### Arguments:
+        fn:     mapper function; called with v (value), i (property name), and d (dictionary) named arguments
+        d:      dictionary to flat-map against
+    ### Returns:
+        dictionary
+    ### Aliases:
+        FPO.chain_dict(..)
+    ### Example:
+        def split_evens_in_half(v, key):
+            if v % 2 == 0:
+            return { key: v/2, key+&#39;_2&#39;: v/2 }
+        return v
+        nums = {&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;c&#39;: 3, &#39;d&#39;: 4}
+        assert split_evens_in_half(v=3, key=&#39;c&#39;) == 3
+        assert split_evens_in_half(v=4, key=&#39;d&#39;) == {&#39;d&#39;:2, &#39;d_2&#39;: 2 }
+        assert FPO.map_dict(fn=split_evens_in_half, d=nums) == {&#39;a&#39;: 1, &#39;b&#39;: {&#39;b&#39;: 1, &#39;b_2&#39;: 1}, &#39;c&#39;: 3, &#39;d&#39;: {&#39;d&#39;: 2, &#39;d_2&#39;: 2}}
+        assert FPO.flat_map_dict(fn=split_evens_in_half, d=nums) == {&#39;a&#39;: 1, &#39;b&#39;: 1, &#39;b_2&#39;: 1, &#39;c&#39;: 3, &#39;d&#39;: 2, &#39;d_2&#39;: 2}
+    &#39;&#39;&#39;
+    dd = map_dict(fn,d)
+    r = {}
+    for key,v in dd.items():
+        if isinstance(v, dict) is True:
+            r.update(v)
+        else:
+            r[key] = v
+    return r
+chain_dict = flat_map_dict
+
+
+
+def flatten(l, n=-1):
+    &#39;&#39;&#39;
+    ## FPO.flatten(...)
+    Flattens an array of nested arrays. Optionally, specify how many levels of nesting to flatten out.
+    ### Arguments:
+        l:   list to flat-map against
+        n:   (optional) the number of levels of nesting to flatten out; if omitted, defaults to Infinity (to flatten any nested depth)
+    ### Returns:
+        list
+    ### Example:
+        nums = [1,2,[3,4],[5,[6,7]]]
+        assert FPO.flatten(l=nums) == [1,2,3,4,5,6,7]
+        assert FPO.flatten(l=nums,n=1) == [1, 2, 3, 4, 5, [6, 7]]
+    &#39;&#39;&#39;
+    if n is 0: return l
+    r = []
+    for e in l:
+        if isinstance(e, list) is True:
+            r += flatten(e, n=(n-1))
+        else:
+            r.append(e)
+    return r
+
+
+
+def head(v):
+    &#39;&#39;&#39;
+    ## FPO.head(...)
+    Returns the element as accessed at index 0 of the value.
+    ### Arguments:
+        v:   list, tuple, dict, str
+    ### Returns:
+        any
+    ### Example:
+        nums = [1,2,3,4]
+        assert FPO.head(v={&#39;a&#39;:42,&#39;b&#39;:56}) == 42
+        assert FPO.head(v=nums) == 1
+        assert FPO.head(v=(42,56)) == 42
+        assert FPO.head(v=&#39;abc&#39;) == &#39;a&#39;
+        assert FPO.head(v=[]) == None
+        assert FPO.head(v={}) == None
+        assert FPO.head(v=&#39;&#39;) == None
+    &#39;&#39;&#39;
+    # https://docs.python.org/2/library/stdtypes.html#truth-value-testing
+    if bool(v) is not True:
+        return None
+    elif isinstance(v, dict) is True:
+        return next(iter(v.values()))
+    elif isinstance(v, (list, tuple)) is True:
+        return v[0]
+    elif isinstance(v, str) is True:
+        return list(v)[0]
+
+
+
+def identity(d):
+    &#39;&#39;&#39;
+    ## FPO.identity(...)
+    Returns the value given to it. Useful as a default placeholder for certain operations(i.e., composition, reduction).
+    ### Arguments:
+        d:   list
+    ### Returns:
+        any
+    ### Example:
+        FPO.identity( {&#39;v&#39;: 42} ) == 42
+    See also: FPO.constant(...)
+    &#39;&#39;&#39;
+    return next(iter(d.values()))
+
+
+
+def map_dict(fn, d):
+    &#39;&#39;&#39;
+    ## FPO.map_dict(...)
+    Produces a new dictionary by calling a mapper function with each property value in the original dictionary. The value the mapper function returns is inserted in the new object at that same property name. The new dictionary will always have the same number of properties as the original dictionary.
+    ### Arguments:
+        fn:     mapper function; called with v (value), i (index), and d (dictionary) named arguments
+        d:   dictionary to-map against
+    ### Returns:
+        dictionary
+    ### Example:
+        def double(v, key): return v * 2
+        nums = {&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;c&#39;: 3}
+        assert FPO.map_dict(fn=double,d=nums) == {&#39;a&#39;: 2, &#39;b&#39;: 4, &#39;c&#39;: 6}
+    &#39;&#39;&#39;
+    r = {}
+    for key, v in d.items():
+        r[key] = fn(v=v,key=key)
+    return r
+
+
+
+def map_list(fn, l):
+    &#39;&#39;&#39;
+    ## FPO.map_list(...)
+    Produces a new list by calling a mapper function with each value in the original list. The value the mapper function returns is inserted in the new list at that same position. The new list will always be the same length as the original list.
+    ### Arguments:
+        fn: mapper function; called with v (value) and l (list) named arguments
+        l:  list to map against
+    ### Returns:
+        list
+    ### Example:
+        def double(v): return v * 2
+        nums = [1,2,3]
+        assert FPO.map_list(fn=double,l=nums) == [2,4,6]
+    &#39;&#39;&#39;
+    r = []
+    for v in l:
+        r.append(fn(v=v))
+    return r
+
+
+
+def memoise(fn,n=-1):
+    &#39;&#39;&#39;
+    ## FPO.memoize(...)
+    For performance optimization reasons, wraps a function such that it remembers each set of arguments passed to it, associated with that underlying return value. If the wrapped function is called subsequent times with the same set of arguments, the cached return value is returned instead of being recomputed. Each wrapped function instance has its own separate cache, even if wrapping the same original function multiple times.
+
+    A set of arguments is &#34;remembered&#34; by being hashed to a string value to use as a cache key. This hashing is done internally with json.dumps(..), which is fast and works with many common value types. However, this hashing is by no means bullet-proof for all types, and does not guarantee collision-free. Use caution: generally, you should only use primitives (number, string, boolean, null, and None) or simple objects (dict, list) as arguments. If you use objects, always make sure to list properties in the same order to ensure proper hashing.
+
+    Unary functions (single argument; n of 1) with a primitive argument are the fastest for memoisation, so if possible, try to design functions that way. In these cases, specifying n as 1 will help ensure the best possible performance.
+
+    Warning: Be aware that if 1 is initially specified (or detected) for n, additional arguments later passed to the wrapped function are not considered in the memoisation hashing, though they will still be passed to the underlying function as-is. This may cause unexpected results (false-positives on cache hits); always make sure n matches the expected number of arguments.
+    ### Arguments:
+        fn: function to wrap
+        n:  number of arguments to memoize; if omitted, tries to detect the arity (fn.length) to use.
+    ### Returns:
+        list
+    ### Example:
+        def sum(x,y):
+            return x + y + random.randint(1,101)
+        fa = FPO.memoise(fn=sum)
+        fb = FPO.memoise(fn=sum, n=1)
+        cached_a = fa(2,3)
+        assert fa(2,3) == cached_a
+        cached_b = fb(2,3)
+        assert fb(2,4) == cached_b
+    &#39;&#39;&#39;
+    cache = {}
+    def memoised(*args, **kwargs):
+        nonlocal cache
+        if bool(args) is True:
+            key = json.dumps(take(args, n) if n &gt; 0 else args, sort_keys=True, separators=(&#39;,&#39;,&#39;:&#39;))
+        else:
+            key = json.dumps(take(kwargs, n) if n &gt; 0 else kwargs, sort_keys=True, separators=(&#39;,&#39;,&#39;:&#39;))
+        if key in cache:
+            return cache[key]
+        else:
+            cache[key] = fn(*args, **kwargs)
+            return cache[key]
+    return memoised
+
+
+
+def n_ary(fn,props):
+    &#39;&#39;&#39;
+    ## FPO.n_ary(...)
+    Wraps a function to restrict its inputs to only the named arguments as specified. It is similar to FPO.pluck.
+    ### Arguments:
+        fn:     function to wrap
+        props:  list of property names to allow as named arguments; if empty, produces a &#34;nullary&#34; function -- won&#39;t receive any arguments.
+    ### Returns:
+        function
+    ### Example:
+        def foo(d): return d
+        f = FPO.n_ary(fn=foo, props=[&#39;x&#39;,&#39;y&#39;,&#39;z&#39;])
+        assert f({&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3, &#39;w&#39;: 4}) == {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3}
+    &#39;&#39;&#39;
+    def n_aried(d):
+        if bool(props) is not True:
+            return fn()
+        else:
+            r = {}
+            for key in props:
+                r[key] = d[key]
+            return fn(r)
+    return n_aried
+
+
+
+def partial(fn, args):
+    &#39;&#39;&#39;
+    ## FPO.partial(...)
+    Wraps a function with a new function that already has some of the arguments pre-specified, and is waiting for the rest of them on the next call. Unlike FPO.curry(..), you must specify all the remaining arguments on the next call of the partially-applied function.
+
+    With traditional FP libraries, partial(..) works in left-to-right order (as does FPO.std.partial(..)). That&#39;s why typically you also need a FPO.std.partialRight(..) if you want to partially-apply from the opposite direction.
+
+    However, using named arguments style -- after all, that is the whole point of FPO! -- order doesn&#39;t matter. For familiarity sake, FPO.partialRight(..) is provided, but it&#39;s just an alias to FPO.partial(..).
+    ### Arguments:
+        fn:     function to partially-apply
+        args:   object containing the arguments to apply now
+    ### Returns:
+        function
+    ### Example:
+        def foo(x,y,z): return x + y + z
+        f = FPO.partial(fn=foo, args={&#39;x&#39;: &#39;a&#39;});
+        assert f(y=&#39;b&#39;, z=&#39;c&#39;) == &#39;abc&#39;
+    &#39;&#39;&#39;
+    def partialed(**kwargs):
+        l_kwargs = copy.copy(kwargs)
+        l_kwargs.update(args)
+        return fn(**l_kwargs)
+    return partialed
+
+
+
+def pick(d,props):
+    &#39;&#39;&#39;
+    ## FPO.pick(...)
+    Returns a new dictionary with only the specified properties from the original dictionary. Includes only properties from the original dictionary.
+    ### Arguments:
+        d:      dictionary to pick properties from
+        props:  list of property names to pick from the object; if a property does not exist on the original dictionary, it is not added to the new dictionary, unlike FPO.pickAll(..).
+    ### Returns:
+        dictionary
+    ### Example:
+        d = {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3, &#39;w&#39;: 4}
+        assert FPO.pick(d,props=[&#39;x&#39;,&#39;y&#39;]) == {&#39;x&#39;: 1, &#39;y&#39;: 2}
+    &#39;&#39;&#39;
+    r = {}
+    for i in props:
+        if i in d:
+            r[i] = d[i]
+    return r
+
+
+
+def pick_all(d, props):
+    &#39;&#39;&#39;
+    ## FPO.pick_all(...)
+    Returns a new dictionary with only the specified properties from the original dictionary. Includes all specified properties.
+    ### Arguments:
+        d:      dictionary to pick properties from
+        props:  list of property names to pick from the dictionary; even if a property does not exist on the original dictionary, it is still added to the new object with an undefined value, unlike FPO.pick(..).
+    ### Returns:
+        dictionary
+    ### Example:
+        d = {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3, &#39;w&#39;: 4}
+        assert FPO.pick_all(d,props=[&#39;x&#39;,&#39;y&#39;,&#39;r&#39;]) == {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;r&#39;: None}
+    &#39;&#39;&#39;
+    r = {}
+    for i in props:
+        if i in d:
+            r[i] = d[i]
+        else:
+            r[i] = None
+    return r
+
+
+
+def pipe(fns):
+    &#39;&#39;&#39;
+    ## FPO.pipe(...)
+    Produces a new function that&#39;s the composition of a list of functions. Functions are composed left-to-right (unlike FPO.compose(..)) from the array.
+    ### Arguments:
+        fns:    list of functions
+    ### Returns:
+        function
+    ### Example:
+        f = FPO.pipe([
+            lambda v: v+2,
+            lambda v: v*2,
+            lambda v: v-2,
+        ])
+        assert f(10) == 22
+    &#39;&#39;&#39;
+    def piped(v):
+        result = v
+        for fn in fns:
+            result = fn(v=result)
+        return result
+    return piped
+
+
+
+def pluck(l, *args):
+    &#39;&#39;&#39;
+    ## FPO.pluck(...)
+    Plucks properties form the given list and return a list of properties&#39; values
+    ### Arguments:
+        l:   list
+        *args:  properties
+    ### Returns:
+        a list of values
+    ### Example:
+        l = [{&#39;x&#39;: 1, &#39;y&#39;:2}, {&#39;x&#39;: 3, &#39;y&#39;: 4}]
+        assert FPO.pluck(l, &#39;x&#39;, &#39;y&#39;) == [[1, 2], [3, 4]]
+        assert FPO.pluck(l, &#39;x&#39;) == [1, 3]
+    &#39;&#39;&#39;
+    fn = lambda d, *args: [d[arg] for arg in args]
+    r = [fn(o, *args) for o in l]
+    if len(args) == 1:
+        return [v[0] for v in r]
+    else:
+        return r
+
+
+
+def prop(d,prop):
+    &#39;&#39;&#39;
+    ## FPO.prop(...)
+    Extracts a property&#39;s value from a dictionary.
+    ### Arguments:
+        d:    dictionary to pull the property value from
+        prop: property name to pull from the dictionary
+    ### Returns:
+        any
+    ### Example:
+        obj = {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3, &#39;w&#39;: 4}
+        assert FPO.prop(d=obj, prop=&#39;y&#39;) == 2
+    &#39;&#39;&#39;
+    return d[prop]
+
+
+
+def reassoc(d,props):
+    &#39;&#39;&#39;
+    ## FPO.reassoc(...)
+    Like a mixture between FPO.pick(..) and FPO.setProp(..), creates a new dictionary that has properties remapped from original names to new names. Any properties present on the original dictionary that aren&#39;t remapped are copied with the same name.
+    ### Arguments:
+        d:      dictionary to remap properties from
+        props:  dictionary whose key/value pairs are sourceProp: targetProp remappings
+    ### Returns:
+        dictionary
+    ### Example:
+        obj = dict(zip([&#39;x&#39;,&#39;y&#39;,&#39;z&#39;],[1, 2, 3]))
+        assert FPO.reassoc(d=obj, props={&#39;x&#39;: &#39;a&#39;, &#39;y&#39;: &#39;b&#39;}) == {&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;z&#39;: 3}
+        assert obj == {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3}
+    &#39;&#39;&#39;
+    r = {}
+    for k,v in d.items():
+        if k in props:
+            r[props[k]] = d[k]
+        else:
+            r[k] = d[k]
+    return r
+
+
+
+def reduce(fn,l=[],v=None):
+    &#39;&#39;&#39;
+    ## FPO.reduce(..)
+    Processes a list from left-to-right (unlike FPO.reduceRight(..)), successively combining (aka &#34;reducing&#34;, &#34;folding&#34;) two values into one, until the entire list has been reduced to a single value. An initial value for the reduction can optionally be provided.
+    ### Arguments:
+        fn: reducer function; called with acc (acculumator), v (value) and l (list) named arguments
+        l:  list to reduce
+        v:  (optional) initial value to use for the reduction; if provided, the first reduction will pass to the reducer the initial value as the acc and the first value from the array as v. Otherwise, the first reduction has the first value of the array as acc and the second value of the array as v.
+    ### Returns:
+        any
+    ### Example:
+        def str_concat(acc,v):
+            return acc + v
+        vowels = [&#34;a&#34;,&#34;e&#34;,&#34;i&#34;,&#34;o&#34;,&#34;u&#34;,&#34;y&#34;]
+        assert FPO.reduce(fn=str_concat, l=vowels) == &#39;aeiouy&#39;
+        assert FPO.reduce(fn=str_concat, l=vowels, v=&#39;vowels: &#39;) == &#39;vowels: aeiouy&#39;
+        assert vowels == [&#34;a&#34;,&#34;e&#34;,&#34;i&#34;,&#34;o&#34;,&#34;u&#34;,&#34;y&#34;]
+    &#39;&#39;&#39;
+    orig_l = l
+    initial_v = v
+    if initial_v is None and len(l) &gt; 0:
+        initial_v = l[0]
+        l = l[1:]
+    for e in l:
+        initial_v = fn(acc=initial_v, v=e)
+    return initial_v
+
+
+
+def reduce_dict(fn,d,v=None):
+    &#39;&#39;&#39;
+    ## FPO.reduce_dict(..)
+    Processes an dictionary&#39;s properties (in enumeration order), successively combining (aka &#34;reducing&#34;, &#34;folding&#34;) two values into one, until all the dictionary&#39;s properties have been reduced to a single value. An initial value for the reduction can optionally be provided.
+    ### Arguments:
+        fn: reducer function; called with acc (acculumator), v (value) and l (list) named arguments
+        d:  dictionary to reduce
+        v:  (optional) initial value to use for the reduction; if provided, the first reduction will pass to the reducer the initial value as the acc and the first value from the array as v. Otherwise, the first reduction has the first value of the array as acc and the second value of the array as v.
+    ### Returns:
+        any
+    ### Example:
+        def str_concat(acc,v):
+            return acc + v
+        vowels = [&#34;a&#34;,&#34;e&#34;,&#34;i&#34;,&#34;o&#34;,&#34;u&#34;,&#34;y&#34;]
+        assert FPO.reduce(fn=str_concat, l=vowels) == &#39;aeiouy&#39;
+        assert FPO.reduce(fn=str_concat, l=vowels, v=&#39;vowels: &#39;) == &#39;vowels: aeiouy&#39;
+        assert vowels == [&#34;a&#34;,&#34;e&#34;,&#34;i&#34;,&#34;o&#34;,&#34;u&#34;,&#34;y&#34;]
+    &#39;&#39;&#39;
+    init_k = next(iter(d))
+    r = d[init_k]
+    for key,value in d.items():
+        if key is not init_k:
+            r = fn(acc=r, v=value)
+    if bool(v) is True:
+        return v + r
+    return r
+
+
+
+def reduce_right(fn,l,v=None):
+    &#39;&#39;&#39;
+    ## FPO.reduce_right(..)
+    Processes a list from right-to-left (unlike FPO.reduce(..)), successively combining (aka &#34;reducing&#34;, &#34;folding&#34;) two values into one, until the entire list has been reduced to a single value.
+    An initial value for the reduction can optionally be provided. If the array is empty, the initial value is returned (or undefined if it was omitted).
+    ### Arguments:
+        fn: reducer function; called with acc (acculumator), v (value) and l (list) named arguments
+        l:  list to reduce
+        v:  (optional) initial value to use for the reduction; if provided, the first reduction will pass to the reducer the initial value as the acc and the first value from the array as v. Otherwise, the first reduction has the first value of the array as acc and the second value of the array as v.
+    ### Returns:
+        any
+    ### Example:
+        def str_concat(acc,v):
+            return acc + v
+        vowels = [&#34;a&#34;,&#34;e&#34;,&#34;i&#34;,&#34;o&#34;,&#34;u&#34;,&#34;y&#34;]
+        assert FPO.reduce_right(fn=str_concat, l=vowels) == &#39;yuoiea&#39;
+        assert FPO.reduce_right(fn=str_concat, l=vowels, v=&#39;vowels: &#39;) == &#39;vowels: yuoiea&#39;
+        assert vowels == [&#34;a&#34;,&#34;e&#34;,&#34;i&#34;,&#34;o&#34;,&#34;u&#34;,&#34;y&#34;]
+    &#39;&#39;&#39;
+    rl = l[::-1]
+    r = rl[0]
+    for e in rl[1:]:
+        r = fn(acc=r, v=e)
+    if bool(v) is True:
+        return v + r
+    return r
+
+
+
+def remap(fn, args):
+    &#39;&#39;&#39;
+    ## FPO.remap(..)
+    Remaps the expected named arguments of a function. This is useful to adapt a function to be used if the arguments passed in will be different than what the function expects.
+    A common usecase will be to adapt a function so it&#39;s suitable for use as a mapper/predicate/reducer function, or for composition.
+    ### Arguments:
+        fn:     function to remap
+        args:   dictionary whose key/value pairs represent the origArgName: newArgName mappings
+    ### Returns:
+        function
+    ### Example:
+        def double(x): return x * 2
+        def increment(y): return y + 1
+        def div3(z): return z / 3
+        f = FPO.remap(fn=double, args=dict(v=&#39;x&#39;))
+        g = FPO.remap(fn=increment, args=dict(v=&#39;y&#39;))
+        h = FPO.remap(fn=div3, args=dict(v=&#39;z&#39;))
+        m = FPO.compose(fns=[h,g,f])
+        assert f(v=3) == 6
+        assert m(v=4) == 3
+        assert FPO.map_list(g, [1,4,7,10,13]) == [2,5,8,11,14]
+        assert FPO.map_list(m, [1,4,7,10,13]) == [1,3,5,7,9]
+    &#39;&#39;&#39;
+    def remaped(**kwargs):
+        l_kwargs = reassoc(kwargs,props=args)
+        return fn(**l_kwargs)
+    return remaped
+
+
+
+def set_prop(d,prop,v):
+    &#39;&#39;&#39;
+    ##FPO.set_prop(...)
+    Creates a shallow clone of a dictionary, assigning the specified property value to the new dictionary.
+    ### Arguments:
+        d:      (optional) object to clone; if omitted, defaults to a new empty dictionary
+        prop:   property name where to set the value on the new dictionary
+        v:      value
+    ### Returns:
+        any
+    ### Example:
+        obj = dict(x=1, y=2,z=3)
+        assert FPO.set_prop(d=obj, prop=&#39;w&#39;, v=4) == {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3, &#39;w&#39;: 4}
+        assert obj == {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3}
+    &#39;&#39;&#39;
+    if bool(d) is True:
+        r = copy.copy(d)
+    else:
+        r = {}
+    r[prop] = v
+    return r
+
+
+
+def tail(v):
+    &#39;&#39;&#39;
+    ## FPO.tail(...)
+    Returns everything else in the value except the element as accessed at index 0; basically the inverse of FPO.head(..)
+    ### Arguments:
+        v:   list/string/dictionary
+    ### Returns:
+        any
+    ### Example:
+        assert FPO.tail(v={&#39;a&#39;:42,&#39;b&#39;:56,&#39;c&#39;:34}) == {&#39;b&#39;:56,&#39;c&#39;:34}
+        assert FPO.tail(v=[1,2,3,4]) == [2,3,4]
+        assert FPO.tail(v=(42,56,32)) == (56,32)
+        assert FPO.tail(v=&#39;abc&#39;) == &#39;bc&#39;
+        assert FPO.tail(v=[]) == None
+        assert FPO.tail(v={}) == None
+        assert FPO.tail(v=&#39;&#39;) == None
+    &#39;&#39;&#39;
+    if bool(v) is not True:
+        return None
+    elif isinstance(v, dict) is True:
+        init_k = next(iter(v))
+        r = {}
+        for key,value in v.items():
+            if key is not init_k:
+                r[key] = value
+        return r
+    elif isinstance(v, (list, tuple)) is True:
+        return v[1:]
+    elif isinstance(v, str) is True:
+        return v[1:]
+
+
+
+def take(iterable, n=1):
+    &#39;&#39;&#39;
+    ## FPO.take(...)
+    Returns the specified number of elements from the value, starting from the beginning.
+    ### Arguments:
+        iterable:   list/string
+        n:          number of elements to take from the beginning of the value; if omitted, defaults to `1`
+    ### Returns:
+        list/string
+    ### Example:
+        items = [2,4,6,8,10]
+        assert FPO.take(items, 3) == [2,4,6]
+        assert FPO.take(items) == [2]
+        assert FPO.take({&#39;apple&#39;,&#39;banana&#39;,&#39;cherry&#39;}, 2) == [&#39;apple&#39;,&#39;banana&#39;]
+    &#39;&#39;&#39;
+    r = []
+    if iterable == None:
+        return r
+    counter = 0
+    for item in iterable:
+        if counter == n:
+            break
+        counter += 1
+        r.append(item)
+    if isinstance(iterable, str):
+        return &#39;&#39;.join(r)
+    else:
+        return r
+
+
+
+def trampoline(fn):
+    &#39;&#39;&#39;
+    ## FPO.trampoline(...)
+    Wraps a continuation-returning recursive function in another function that will run it until it no longer returns another continuation function. Trampolines are an alternative to tail calls.
+    ### Arguments:
+        fn:     function to run
+    ### Returns:
+        function
+    ### Example:
+        def sum(total,x):
+            if x &lt;= 1:
+            return total + x
+        return lambda : sum(total+x, x-1)
+        assert FPO.trampoline(fn=sum)(0,5) == 15
+    &#39;&#39;&#39;
+    def trampolined(*args, **kwargs):
+        if bool(args):
+            r = fn(*args)
+        else:
+            r = fn(**kwargs)
+        while callable(r) is True:
+            r = r()
+        return r
+    return trampolined
+
+
+
+def transduce_fn(fn,co,v,l=[]):
+    &#39;&#39;&#39;
+    ## FPO.transducer_transduce(...)
+    Produces a reducer from a specified transducer and combination function. Then runs a reduction on a list, using that reducer, starting with the specified initial value.
+    Note: When composing transducers, the effective order of operations is reversed from normal composition. Instead of expecting composition to be right-to-left, the effective order will be left-to-right (see below).
+    ### Arguments:
+        fn: transducer function
+        co: combination function for the transducer
+        v: initial value for the reduction
+        l: the list for the reduction
+    ### Returns:
+        any
+    ### Example:
+        def double(v):
+            return v * 2
+        def is_odd(v):
+            return v % 2 == 1
+        def list_push(acc, v):
+            acc.append(v)
+            return acc
+        nums = [1,2,3,4,5]
+        transducer = FPO.compose(
+            fns=[
+                FPO.transducer_filter(fn=is_odd),
+                FPO.transducer_map(fn=double)
+            ]
+        )
+        result = FPO.transducer_transduce(
+            fn=transducer,
+            co=list_push,
+            v=[],
+            l=nums
+        )
+        assert result == [2,6,10]
+    &#39;&#39;&#39;
+    transducer = fn
+    combination_fn = co
+    initial_value = v
+    reducer = transducer(v=combination_fn)
+    return reduce(fn=reducer, v=initial_value, l=l)
+transducer_transduce = curry_multiple(fn=transduce_fn, n=4)
+
+
+
+def transducer_map_fn(fn,v=None):
+    &#39;&#39;&#39;
+    ## FPO.transducer_map(...)
+    For transducing purposes, wraps a mapper function as a map-transducer. Typically, this map-transducer is then composed with other filter-transducers and/or map-transducers. The resulting transducer is then passed to FPO.transducers.transduce(..).
+    The map-transducer is not a reducer itself; it&#39;s expecting a combination function (reducer), which will then produce a filter-reducer. So alternately, you can manually create the map-reducer and use it directly with a regular FPO.reduce(..) reduction.
+    ### Arguments:
+        fn: mapper function
+    ### Returns:
+        function
+    ### Example:
+        def double(v):
+            return v * 2
+        def array_push(acc, v):
+            acc.append(v)
+            return acc
+        nums = [1,2,3,4,5]
+        map_transducer = FPO.transducer_map(fn=double)
+        r = FPO.transducer_transduce(
+            fn=map_transducer,
+            co=array_push,
+            v=[],
+            l=nums
+        )
+        assert r == [2,4,6,8,10]
+        map_reducer = map_transducer(v=array_push)
+        assert map_reducer(acc=[], v=3) == [6]
+        assert FPO.reduce(fn=map_reducer,v=[],l=nums) == [2,4,6,8,10]
+    &#39;&#39;&#39;
+    mapper_fn = fn
+    combination_fn = v
+    #till waiting on the combination function?
+    if combination_fn is None:
+        #Note: the combination function is usually a composed
+        #function, so we expect the argument by itself,
+        #not wrapped in a dictionary
+        def curried(v):
+            nonlocal mapper_fn
+            return transducer_map_fn(fn=mapper_fn,v=v)
+        return curried
+
+    def reducer(acc,v):
+        nonlocal mapper_fn, combination_fn
+        return combination_fn(acc,v=mapper_fn(v))
+    return reducer
+transducer_map = curry_multiple(fn=transducer_map_fn, n=1)
+
+
+
+def transducer_filter_fn(fn,v=None):
+    &#39;&#39;&#39;
+    ## FPO.transducer_filter(...)
+    For transducing purposes, wraps a predicate function as a filter-transducer. Typically, this filter-transducer is then composed with other filter-transducers and/or map-transducers. The resulting transducer is then passed to FPO.transducers.transduce(..).
+    ### Arguments:
+        fn:    predicate function
+    ### Returns:
+        function
+    ### Example:
+        def is_odd(v):
+            return v % 2 == 1
+        def list_push(acc, v):
+            acc.append(v)
+            return acc
+        nums = [1,2,3,4,5]
+        filter_transducer = FPO.transducer_filter(fn=is_odd)
+        r = FPO.transducer_transduce(fn=filter_transducer, co=list_push, v=[], l=nums)
+        assert r == [1,3,5]
+    &#39;&#39;&#39;
+    predicated_fn = fn
+    combination_fn = v
+    #till waiting on the combination function?
+    if combination_fn is None:
+        #Note: the combination function is usually a composed
+        #function, so we expect the argument by itself,
+        #not wrapped in a dictionary
+        def curried(v):
+            nonlocal predicated_fn
+            return transducer_filter_fn(fn=predicated_fn,v=v)
+        return curried
+
+    def reducer(acc,v):
+        nonlocal predicated_fn, combination_fn
+        if predicated_fn(v):
+            return combination_fn(acc, v)
+        return acc
+    return reducer
+transducer_filter = curry_multiple(fn=transducer_filter_fn, n=1)
+
+
+
+def transducer_into_fn(fn,v,l):
+    &#39;&#39;&#39;
+    ## FPO.transducer_into(...)
+    Selects an appropriate combination function (reducer) based on the provided initial value. Then runs FPO.transducers.transduce(..) under the covers.
+
+    Detects initial values of boolean, number, string, and list types, and dispatches to the appropriate combination function accordingly (FPO.transducers.number(..), etc). Note: A boolean initial value selects FPO.transducer_bool_and(..).
+
+    Note: When composing transducers, the effective order of operations is reversed from normal composition. Instead of expecting composition to be right-to-left, the effective order will be left-to-right (see below).
+    ### Arguments:
+        fn: transducer function
+        v:  initial value for the reduction; also used to select the appropriate combination function (reducer) for the transducing.
+        l: the list for the reductiontransduce_fn
+    ### Example:
+        def double(v):
+            return v * 2
+        def is_odd(v):
+            return v % 2 == 1
+        nums = [1,2,3,4,5]
+        transducer = FPO.compose(
+            fns=[
+                FPO.transducer_filter(fn=is_odd),
+                FPO.transducer_map(fn=double)
+            ]
+        )
+        assert FPO.transducer_into(fn=transducer, v=[], l=nums) == [2,6,10]
+        assert FPO.transducer_into(fn=transducer, v=0, l=nums) == 18
+        assert FPO.transducer_into(fn=transducer, v=&#39;&#39;, l=nums) == &#39;2610&#39;
+    &#39;&#39;&#39;
+    transducer = fn
+    combination_fn = transducer_default
+    if isinstance(v, bool):
+        combination_fn = transducer_bool_and
+    elif isinstance(v, str):
+        combination_fn = transducer_string
+    elif isinstance(v, int):
+        combination_fn = transducer_number
+    elif isinstance(v, list):
+        combination_fn = transducer_list
+    else:
+        transducer_default
+    return transduce_fn(fn=transducer, co=combination_fn, v=v, l=l)
+transducer_into = curry_multiple(fn=transducer_into_fn, n=3)
+
+
+
+def transducer_default(acc,v):
+    &#39;&#39;&#39;
+    ## FPO.transducer_default(...)
+    A reducer function. For transducing purposes, a combination function that&#39;s a default placeholder. It returns only the acc that&#39;s passed to it. The behavior here is almost the same as FPO.identity(..), except that returns acc instead of v.
+    ### Arguments:
+        acc:    acculumator
+        v:  value
+    ### Returns:
+        any
+    ### Example:
+        assert FPO.transducer_default(acc=3, v=1) == 3
+    &#39;&#39;&#39;
+    return acc
+
+
+
+def transducer_list(acc,v):
+    &#39;&#39;&#39;
+    ## FPO.transducer_list(...)
+    A reducer function. For transducing purposes, a combination function that takes an array and a value, and mutates the array by pushing the value onto the end of it. The mutated array is returned.
+    *This function has side-effects*, for performance reasons. It should be used with caution.
+    ### Arguments:
+        acc:    acculumator
+        v:  value
+    ### Returns:
+        list
+    ### Example:
+        arr = [1,2,3]
+        FPO.transducer_list(acc=arr,v=4)
+        assert arr == [1,2,3,4]
+    &#39;&#39;&#39;
+    acc.append(v)
+    return acc
+
+
+
+def transducer_bool_and(acc,v):
+    &#39;&#39;&#39;
+    ## FPO.transducer_bool_and(...)
+    A reducer function. For transducing purposes, a combination function that takes two booleans and ANDs them together. The result is the logical AND of the two values.
+    ### Arguments:
+        acc:    acculumator
+        v:  value
+    ### Returns:
+        true/false
+    ### Example:
+        assert FPO.transducer_bool_and(acc=True, v=True) == True
+        assert FPO.transducer_bool_and(acc=False, v=True) == False
+    &#39;&#39;&#39;
+    if bool(acc) and bool(v) is True:
+        return True
+    else:
+        return False
+
+
+
+def transducer_bool_or(acc,v):
+    &#39;&#39;&#39;
+    ## FPO.transducer_bool_or(...)
+    A reducer function. For transducing purposes, a combination function that takes two booleans and ORs them together. The result is the logical OR of the two values.
+    ### Arguments:
+        acc:    acculumator
+        v:  value
+    ### Returns:
+        true/false
+    ### Example:
+        assert FPO.transducer_bool_or(acc=True, v=True) == True
+        assert FPO.transducer_bool_or(acc=False, v=False) == False
+        assert FPO.transducer_bool_or(acc=False, v=True) == True
+    &#39;&#39;&#39;
+    if bool(acc) or bool(v) is True:
+        return True
+    else:
+        return False
+
+
+
+def transducer_number(acc,v):
+    &#39;&#39;&#39;
+    ## FPO.transducer_number(...)
+    A reducer function. For transducing purposes, a combination function that adds together the two numbers passed into it. The result is the sum.
+    ### Arguments:
+        acc: acculumator
+        v: value
+    ### Returns:
+        number
+    ### Example:
+        assert FPO.transducer_number( acc=3, v=4) == 7
+    &#39;&#39;&#39;
+    return acc + v
+
+
+
+def transducer_string(acc,v):
+    &#39;&#39;&#39;
+    ## FPO.transducer_string(...)
+    A reducer function. For transducing purposes, a combination function that concats the two strings passed into it. The result is the concatenation.
+    ### Arguments:
+        acc: acculumator
+        v: value
+    ### Returns:
+        string
+    ### Example:
+        assert FPO.transducer_string( acc=&#39;hello&#39;, v=&#39;world&#39;) == &#39;helloworld&#39;
+    &#39;&#39;&#39;
+    return str(acc) + str(v)
+
+
+
+def unapply(fn, props):
+    &#39;&#39;&#39;
+    ## FPO.unapply(..)
+    Wraps a function to gather individual positional arguments into an object argument.
+    ### Arguments:
+        fn:     function to wrap
+        props:  list of property names (strings) to indicate the order to gather individual positional arguments as properties.
+    ### Returns:
+        function
+    Example:
+        def foo(x,y):
+            return x + y
+        f = FPO.unapply(fn=foo, props=[&#39;x&#39;,&#39;y&#39;])
+        assert f(1,2) == 3
+    &#39;&#39;&#39;
+    def unapplied(*args):
+        g = zip(props,args)
+        kwargs = dict(g)
+        return fn(**kwargs)
+    return unapplied
+
+
+
+def unary(fn,prop):
+    &#39;&#39;&#39;
+    ## FPO.unary(..)
+    Wraps a function to restrict its inputs to only one named argument as specified.
+    ### Arguments:
+        fn: function to wrap
+        prop: property name to allow as named argument
+    ### Returns:
+        function
+    ### Example:
+        def foo(**kwargs):
+            return kwargs
+        f = FPO.unary(fn=foo, prop=&#39;y&#39;)
+        assert f(x=1,y=2,z=3) == {&#39;y&#39;:2}
+    &#39;&#39;&#39;
+    def unary_fn(**kwargs):
+        l_kwargs = {}
+        l_kwargs[prop] = kwargs[prop]
+        return fn(**l_kwargs)
+    return unary_fn
+
+
+
+def uncurry(fn):
+    &#39;&#39;&#39;
+    ## FPO.uncurry(...)
+    Wraps a (strictly) curried function in a new function that accepts all the arguments at once, and provides them one at a time to the underlying curried function.
+    ### Arguments:
+        fn: function to uncurry
+    ### Returns:
+        function
+    ### Example:
+        def foo(x,y,z):
+            return x + y + z
+        f = FPO.curry(fn=foo, n=3)
+        p = FPO.uncurry(fn=f)
+        assert p(x=1,y=2,z=3) == 6
+    &#39;&#39;&#39;
+    def uncurry_fn(**kwargs):
+        print(&#39;AAAA&#39;, kwargs)
+        r = fn
+        for key,v in kwargs.items():
+            r = r(**{key:v})
+        return r
+    return uncurry_fn</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="fpo.ap"><code class="name flex">
+<span>def <span class="ident">ap</span></span>(<span>fns, list)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpoap">FPO.ap(&hellip;)</h2>
+<p>Produces a new list that is a concatenation of sub-lists, each produced by calling FPO.map(..) with each mapper function and the main list.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fns:   a list of functions
+list:  a list
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>a list of new values
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>fn1 = lambda increment(v) { return v + 1 }
+def double(v) { return v * 2 }
+nums = [1,2,3,4,5]
+</code></pre>
+<h3 id="reference">Reference:</h3>
+<pre><code># &lt;https://treyhunner.com/2015/12/python-list-comprehensions-now-in-color/&gt;
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def ap(fns, list):
+    &#39;&#39;&#39;
+    ## FPO.ap(...)
+    Produces a new list that is a concatenation of sub-lists, each produced by calling FPO.map(..) with each mapper function and the main list.
+    ### Arguments:
+        fns:   a list of functions
+        list:  a list
+    ### Returns:
+        a list of new values
+    ### Example:
+        fn1 = lambda increment(v) { return v + 1 }
+        def double(v) { return v * 2 }
+        nums = [1,2,3,4,5]
+    ### Reference:
+        # https://treyhunner.com/2015/12/python-list-comprehensions-now-in-color/
+    &#39;&#39;&#39;
+    matrix = [[fn(v) for v in list] for fn in fns]
+    return [n for row in matrix for n in row]</code></pre>
+</details>
+</dd>
+<dt id="fpo.apply"><code class="name flex">
+<span>def <span class="ident">apply</span></span>(<span>fn, props=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpoapply">FPO.apply(&hellip;)</h2>
+<p>Wraps a function to spread out the properties from an object arugment as individual positional arguments</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     function to wrap
+props:  (optional) list of property names (strings) to indicate the order to spread properties as individual arguments. If omitted, the signature of fn is parsed for its parameter list to try to determine an ordered property list; this detection only works for simple parameters (including those with default parameter value settings).
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def foo(x, y=2): return x + y
+def bar(a, b, c=0): return a + b + c
+f = FPO.apply(fn=foo)
+p = FPO.apply(fn=bar, props=['x','y'])
+assert f({'a': 1, 'b':1}) == 2
+assert f({'x': 3}) == 5
+assert p({'x': 3, 'y': 2}) == 5
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def apply(fn, props=None):
+    &#39;&#39;&#39;
+    ## FPO.apply(...)
+    Wraps a function to spread out the properties from an object arugment as individual positional arguments
+    ### Arguments:
+        fn:     function to wrap
+        props:  (optional) list of property names (strings) to indicate the order to spread properties as individual arguments. If omitted, the signature of fn is parsed for its parameter list to try to determine an ordered property list; this detection only works for simple parameters (including those with default parameter value settings).
+    ### Returns:
+        function
+    ### Example:
+        def foo(x, y=2): return x + y
+        def bar(a, b, c=0): return a + b + c
+        f = FPO.apply(fn=foo)
+        p = FPO.apply(fn=bar, props=[&#39;x&#39;,&#39;y&#39;])
+        assert f({&#39;a&#39;: 1, &#39;b&#39;:1}) == 2
+        assert f({&#39;x&#39;: 3}) == 5
+        assert p({&#39;x&#39;: 3, &#39;y&#39;: 2}) == 5
+    &#39;&#39;&#39;
+    def applied(d):
+        if props is None:
+            return fn(*(d[key] for key,v in d.items()))
+        return fn(*(d[key] for key in props))
+    return applied</code></pre>
+</details>
+</dd>
+<dt id="fpo.binary"><code class="name flex">
+<span>def <span class="ident">binary</span></span>(<span>fn, props)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpobinary">FPO.binary(&hellip;)</h2>
+<p>Wraps a function to restrict its inputs to dictionary with only two named arguments as specified.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     function to wrap
+props:  list of two property names to allow as named arguments
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def foo(x,y): return x + y
+def bar(a,b,c=1): return a + b + c
+f = FPO.binary(fn=foo, props=['x','y'])
+p = FPO.binary(fn=bar, props=['a','b'])
+assert f({'x':1, 'y':2, 'z':4}) == 3
+assert p({'a':2,'b':4,'c':6}) == 7
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def binary(fn,props):
+    &#39;&#39;&#39;
+    ## FPO.binary(...)
+    Wraps a function to restrict its inputs to dictionary with only two named arguments as specified.
+
+    ### Arguments:
+        fn:     function to wrap
+        props:  list of two property names to allow as named arguments
+    ### Returns:
+        function
+    ### Example:
+        def foo(x,y): return x + y
+        def bar(a,b,c=1): return a + b + c
+        f = FPO.binary(fn=foo, props=[&#39;x&#39;,&#39;y&#39;])
+        p = FPO.binary(fn=bar, props=[&#39;a&#39;,&#39;b&#39;])
+        assert f({&#39;x&#39;:1, &#39;y&#39;:2, &#39;z&#39;:4}) == 3
+        assert p({&#39;a&#39;:2,&#39;b&#39;:4,&#39;c&#39;:6}) == 7
+    &#39;&#39;&#39;
+    _props = props[slice(0,2)]
+    ln = lambda d, props: {key:d[key] for key in props}
+    def binaryFn(d):
+        return fn(**ln(d, _props))
+    return binaryFn</code></pre>
+</details>
+</dd>
+<dt id="fpo.chain"><code class="name flex">
+<span>def <span class="ident">chain</span></span>(<span>fn, l)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpoflat_map">FPO.flat_map(&hellip;)</h2>
+<p>Similar to map(..), produces a new list by calling a mapper function with each value in the original list. If the mapper function returns a list, this list is flattened (one level) into the overall list.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:  mapper function; called with v (value), i (index), and list(l) named arguments
+l:   list to flat-map against
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>list
+</code></pre>
+<h3 id="aliases">Aliases:</h3>
+<pre><code>FPO.chain(..)
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def split_chars(v): return [*v]
+words = ['hello','world']
+assert split_chars(v=words[0]) == ['h','e','l','l','o']
+assert list(map(split_chars, words)) == [['h','e','l','l','o'],['w','o','r','l','d']]
+assert FPO.flat_map(fn=split_chars, l=words) == ['h','e','l','l','o','w','o','r','l','d']
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def flat_map(fn,l):
+    &#39;&#39;&#39;
+    ## FPO.flat_map(...)
+    Similar to map(..), produces a new list by calling a mapper function with each value in the original list. If the mapper function returns a list, this list is flattened (one level) into the overall list.
+    ### Arguments:
+        fn:  mapper function; called with v (value), i (index), and list(l) named arguments
+        l:   list to flat-map against
+    ### Returns:
+        list
+    ### Aliases:
+        FPO.chain(..)
+    ### Example:
+        def split_chars(v): return [*v]
+        words = [&#39;hello&#39;,&#39;world&#39;]
+        assert split_chars(v=words[0]) == [&#39;h&#39;,&#39;e&#39;,&#39;l&#39;,&#39;l&#39;,&#39;o&#39;]
+        assert list(map(split_chars, words)) == [[&#39;h&#39;,&#39;e&#39;,&#39;l&#39;,&#39;l&#39;,&#39;o&#39;],[&#39;w&#39;,&#39;o&#39;,&#39;r&#39;,&#39;l&#39;,&#39;d&#39;]]
+        assert FPO.flat_map(fn=split_chars, l=words) == [&#39;h&#39;,&#39;e&#39;,&#39;l&#39;,&#39;l&#39;,&#39;o&#39;,&#39;w&#39;,&#39;o&#39;,&#39;r&#39;,&#39;l&#39;,&#39;d&#39;]
+    &#39;&#39;&#39;
+    t = list(map(fn, l))
+    is_all_elements_are_list = True
+    for e in t:
+        if isinstance(e, list) is not True:
+            is_all_elements_are_list = False
+    if is_all_elements_are_list is True:
+        r = []
+        for e in t:
+            r += &#39;&#39;.join(e)
+        return r
+    else:
+        return t</code></pre>
+</details>
+</dd>
+<dt id="fpo.chain_dict"><code class="name flex">
+<span>def <span class="ident">chain_dict</span></span>(<span>fn, d)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpoflat_map_dict">FPO.flat_map_dict(&hellip;)</h2>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     mapper function; called with v (value), i (property name), and d (dictionary) named arguments
+d:      dictionary to flat-map against
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>dictionary
+</code></pre>
+<h3 id="aliases">Aliases:</h3>
+<pre><code>FPO.chain_dict(..)
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def split_evens_in_half(v, key):
+    if v % 2 == 0:
+    return { key: v/2, key+'_2': v/2 }
+return v
+nums = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+assert split_evens_in_half(v=3, key='c') == 3
+assert split_evens_in_half(v=4, key='d') == {'d':2, 'd_2': 2 }
+assert FPO.map_dict(fn=split_evens_in_half, d=nums) == {'a': 1, 'b': {'b': 1, 'b_2': 1}, 'c': 3, 'd': {'d': 2, 'd_2': 2}}
+assert FPO.flat_map_dict(fn=split_evens_in_half, d=nums) == {'a': 1, 'b': 1, 'b_2': 1, 'c': 3, 'd': 2, 'd_2': 2}
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def flat_map_dict(fn,d):
+    &#39;&#39;&#39;
+    ## FPO.flat_map_dict(...)
+    ### Arguments:
+        fn:     mapper function; called with v (value), i (property name), and d (dictionary) named arguments
+        d:      dictionary to flat-map against
+    ### Returns:
+        dictionary
+    ### Aliases:
+        FPO.chain_dict(..)
+    ### Example:
+        def split_evens_in_half(v, key):
+            if v % 2 == 0:
+            return { key: v/2, key+&#39;_2&#39;: v/2 }
+        return v
+        nums = {&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;c&#39;: 3, &#39;d&#39;: 4}
+        assert split_evens_in_half(v=3, key=&#39;c&#39;) == 3
+        assert split_evens_in_half(v=4, key=&#39;d&#39;) == {&#39;d&#39;:2, &#39;d_2&#39;: 2 }
+        assert FPO.map_dict(fn=split_evens_in_half, d=nums) == {&#39;a&#39;: 1, &#39;b&#39;: {&#39;b&#39;: 1, &#39;b_2&#39;: 1}, &#39;c&#39;: 3, &#39;d&#39;: {&#39;d&#39;: 2, &#39;d_2&#39;: 2}}
+        assert FPO.flat_map_dict(fn=split_evens_in_half, d=nums) == {&#39;a&#39;: 1, &#39;b&#39;: 1, &#39;b_2&#39;: 1, &#39;c&#39;: 3, &#39;d&#39;: 2, &#39;d_2&#39;: 2}
+    &#39;&#39;&#39;
+    dd = map_dict(fn,d)
+    r = {}
+    for key,v in dd.items():
+        if isinstance(v, dict) is True:
+            r.update(v)
+        else:
+            r[key] = v
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.complement"><code class="name flex">
+<span>def <span class="ident">complement</span></span>(<span>fn)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpocomplement">FPO.complement(&hellip;)</h2>
+<p>Wraps a predicate function &ndash; a function that produces true / false &ndash; to negate its result.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     function to wrap
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def foo(x,y): return x &gt; y
+def bar(): return True
+f = FPO.complement(foo)
+p = FPO.complement(bar)
+assert foo(3,2) == True
+assert f(3,2) == False
+assert bar() == True
+assert p() == False
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def complement(fn):
+    &#39;&#39;&#39;
+    ## FPO.complement(...)
+    Wraps a predicate function -- a function that produces true / false -- to negate its result.
+    ### Arguments:
+        fn:     function to wrap
+    ### Returns:
+        function
+    ### Example:
+        def foo(x,y): return x &gt; y
+        def bar(): return True
+        f = FPO.complement(foo)
+        p = FPO.complement(bar)
+        assert foo(3,2) == True
+        assert f(3,2) == False
+        assert bar() == True
+        assert p() == False
+    &#39;&#39;&#39;
+    def complemented(*arg):
+        return False if fn(*arg) is True else True
+    return complemented</code></pre>
+</details>
+</dd>
+<dt id="fpo.compose"><code class="name flex">
+<span>def <span class="ident">compose</span></span>(<span>fns)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpocompose">FPO.compose(&hellip;)</h2>
+<p>Produces a new function that's the composition of a list of functions. Functions are composed right-to-left (unlike FPO.pipe(..)) from the list.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fns:     list of (lambda)functions
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>f = FPO.compose([
+    lambda v: v+2,
+    lambda v: v*2,
+    lambda v: v-2,
+])
+assert f(10) == 18
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def compose(fns):
+    &#39;&#39;&#39;
+    ## FPO.compose(...)
+    Produces a new function that&#39;s the composition of a list of functions. Functions are composed right-to-left (unlike FPO.pipe(..)) from the list.
+    ### Arguments:
+        fns:     list of (lambda)functions
+    ### Returns:
+        function
+    ### Example:
+        f = FPO.compose([
+            lambda v: v+2,
+            lambda v: v*2,
+            lambda v: v-2,
+        ])
+        assert f(10) == 18
+    &#39;&#39;&#39;
+    def composed(v):
+        result = v
+        for fn in reversed(fns):
+            result = fn(v=result)
+        return result
+    return composed</code></pre>
+</details>
+</dd>
+<dt id="fpo.constant"><code class="name flex">
+<span>def <span class="ident">constant</span></span>(<span>v)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpoconstant">FPO.constant(&hellip;)</h2>
+<p>Wraps a value in a fureversed</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>v:     constant vreversed
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>f = FPO.constant(12)
+assert f() == 12
+assert f(24,9) == 12
+assert f(24) == 12
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def constant(v):
+    &#39;&#39;&#39;
+    ## FPO.constant(...)
+    Wraps a value in a fureversed
+    ### Arguments:
+        v:     constant vreversed
+    ### Returns:
+        function
+    ### Example:
+        f = FPO.constant(12)
+        assert f() == 12
+        assert f(24,9) == 12
+        assert f(24) == 12
+    &#39;&#39;&#39;
+    def fn(*arg):
+        return v
+    return fn</code></pre>
+</details>
+</dd>
+<dt id="fpo.curry"><code class="name flex">
+<span>def <span class="ident">curry</span></span>(<span>fn, n)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpocurry">FPO.curry(&hellip;)</h2>
+<p>Curries a function so that you can pass one argument at a time, each time getting back another function to receive the next argument. Once all arguments are passed, the underlying function is called with the arguments.</p>
+<p>Unlike FPO.curryMultiple(..), you can only pass one property argument at a time to each curried function (see example below). If multiple properties are passed to a curried call, only the first property (in enumeration order) will be passed.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     function to curry
+n:      number of arguments to curry for
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def foo(x,y,z):
+    return x + y + z
+f = FPO.curry(fn=foo, n=3)
+v = f(x=1)()(y=2, z=3)(z=4)
+assert v == 7
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def curry(fn, n):
+    &#39;&#39;&#39;
+    ## FPO.curry(...)
+    Curries a function so that you can pass one argument at a time, each time getting back another function to receive the next argument. Once all arguments are passed, the underlying function is called with the arguments.
+
+    Unlike FPO.curryMultiple(..), you can only pass one property argument at a time to each curried function (see example below). If multiple properties are passed to a curried call, only the first property (in enumeration order) will be passed.
+    ### Arguments:
+        fn:     function to curry
+        n:      number of arguments to curry for
+    ### Returns:
+        function
+    ### Example:
+        def foo(x,y,z):
+            return x + y + z
+        f = FPO.curry(fn=foo, n=3)
+        v = f(x=1)()(y=2, z=3)(z=4)
+        assert v == 7
+    &#39;&#39;&#39;
+    f_args = []
+    f_kwargs = {}
+    def curried(*args, **kwargs):
+        nonlocal f_args, f_kwargs
+        if args:
+            f_args += args[0]
+            if len(f_args) is n:
+                return fn(*f_args)
+            return curried
+        elif kwargs:
+            key = list(kwargs)[0]
+            f_kwargs[key] = kwargs[key]
+            if len(f_kwargs) is n:
+                return fn(**f_kwargs)
+            return curried
+        else:
+            return curried
+    return curried</code></pre>
+</details>
+</dd>
+<dt id="fpo.curry_multiple"><code class="name flex">
+<span>def <span class="ident">curry_multiple</span></span>(<span>fn, n)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpocurry_multiple">FPO.curry_multiple(&hellip;)</h2>
+<p>Just like FPO.curry(..), except each curried function allows multiple arguments instead of just one.</p>
+<p>Unlike FPO.curryMultiple(..), you can only pass one property argument at a time to each curried function (see example below). If multiple properties are passed to a curried call, only the first property (in enumeration order) will be passed.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     function to curry
+n:      number of arguments to curry for
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def foo(x,y,z):
+    return x + y + z
+f = FPO.curry_multiple(fn=foo, n=3)
+v = f(x=0,y=1)()(x=1)(y=2,z=3)
+assert v == 6
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def curry_multiple(fn, n):
+    &#39;&#39;&#39;
+    ## FPO.curry_multiple(...)
+    Just like FPO.curry(..), except each curried function allows multiple arguments instead of just one.
+
+    Unlike FPO.curryMultiple(..), you can only pass one property argument at a time to each curried function (see example below). If multiple properties are passed to a curried call, only the first property (in enumeration order) will be passed.
+    ### Arguments:
+        fn:     function to curry
+        n:      number of arguments to curry for
+    ### Returns:
+        function
+    ### Example:
+        def foo(x,y,z):
+            return x + y + z
+        f = FPO.curry_multiple(fn=foo, n=3)
+        v = f(x=0,y=1)()(x=1)(y=2,z=3)
+        assert v == 6
+    &#39;&#39;&#39;
+    f_args = []
+    f_kwargs = {}
+    def curried(*args, **kwargs):
+        nonlocal f_args, f_kwargs
+        if args or kwargs:
+            f_args += args
+            f_kwargs.update(kwargs)
+            if len(f_args) is n or len(f_kwargs) is n:
+                return fn(*f_args, **f_kwargs)
+            return curried
+        else:
+            return curried
+    return curried</code></pre>
+</details>
+</dd>
+<dt id="fpo.filter_in"><code class="name flex">
+<span>def <span class="ident">filter_in</span></span>(<span>fn, l)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpofilter_in">FPO.filter_in(&hellip;)</h2>
+<p>Commonly known as filter(..), produces a new list by calling a predicate function with each value in the original list. For each value, if the predicate function returns true (or truthy), the value is included in (aka, filtered into) the new list. Otherwise, the value is omitted.
+It is the same as python filter() method</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     predicate function; called with v (value), i (index), and l (list) named arguments
+l:    list to filter against
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>list
+</code></pre>
+<h3 id="aliases">Aliases:</h3>
+<pre><code>FPO.keep(..)
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def is_odd(v):
+    return v % 2 == 1
+nums = [1,2,3,4,5]
+assert FPO.filter_in(fn=is_odd, l=nums) == [1,3,5]
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def filter_in(fn,l):
+    &#39;&#39;&#39;
+    ## FPO.filter_in(...)
+    Commonly known as filter(..), produces a new list by calling a predicate function with each value in the original list. For each value, if the predicate function returns true (or truthy), the value is included in (aka, filtered into) the new list. Otherwise, the value is omitted.
+    It is the same as python filter() method
+    ### Arguments:
+        fn:     predicate function; called with v (value), i (index), and l (list) named arguments
+        l:    list to filter against
+    ### Returns:
+        list
+    ### Aliases:
+        FPO.keep(..)
+    ### Example:
+        def is_odd(v):
+            return v % 2 == 1
+        nums = [1,2,3,4,5]
+        assert FPO.filter_in(fn=is_odd, l=nums) == [1,3,5]
+    &#39;&#39;&#39;
+    r = []
+    for e in l:
+        if fn(e):
+           r.append(e)
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.filter_in_dict"><code class="name flex">
+<span>def <span class="ident">filter_in_dict</span></span>(<span>fn, d)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpofilter_in_dict">FPO.filter_in_dict(&hellip;)</h2>
+<p>Produces a new dictionary by calling a predicate function with each property value in the original dictionary. For each value, if the predicate function returns true (or truthy), the value is included in (aka, filtered into) the new object at the same property name. Otherwise, the value is omitted.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     predicate function; called with v (value), i (property name), and o (object) named arguments
+d:      dictionary to filter against
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>dictionary
+</code></pre>
+<h3 id="aliases">Aliases:</h3>
+<pre><code>FPO.keep_dict(..)
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def is_odd(v):
+    return v % 2 == 1
+nums = {'x':1,'y':2,'z':3,'r':4,'l':5}
+assert FPO.filter_in_dict(fn=is_odd, d=nums) == {'x':1,'z':3,'l':5}
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def filter_in_dict(fn, d):
+    &#39;&#39;&#39;
+    ## FPO.filter_in_dict(...)
+    Produces a new dictionary by calling a predicate function with each property value in the original dictionary. For each value, if the predicate function returns true (or truthy), the value is included in (aka, filtered into) the new object at the same property name. Otherwise, the value is omitted.
+    ### Arguments:
+        fn:     predicate function; called with v (value), i (property name), and o (object) named arguments
+        d:      dictionary to filter against
+    ### Returns:
+        dictionary
+    ### Aliases:
+        FPO.keep_dict(..)
+    ### Example:
+        def is_odd(v):
+            return v % 2 == 1
+        nums = {&#39;x&#39;:1,&#39;y&#39;:2,&#39;z&#39;:3,&#39;r&#39;:4,&#39;l&#39;:5}
+        assert FPO.filter_in_dict(fn=is_odd, d=nums) == {&#39;x&#39;:1,&#39;z&#39;:3,&#39;l&#39;:5}
+    &#39;&#39;&#39;
+    r = {}
+    for key,v in d.items():
+        if fn(v):
+            r[key] = v
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.filter_out"><code class="name flex">
+<span>def <span class="ident">filter_out</span></span>(<span>fn, l)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpofilter_out">FPO.filter_out(&hellip;)</h2>
+<p>The inverse of FPO.filterIn(..), produces a new list by calling a predicate function with each value in the original list. For each value, if the predicate function returns true (or truthy), the value is omitted from (aka, filtered out of) the new list. Otherwise, the value is included.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     predicate function; called with v (value), i (index), and l (list) named arguments
+l:    list to filter against
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>list
+</code></pre>
+<h3 id="aliases">Aliases:</h3>
+<pre><code>FPO.reject(..)
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def is_odd(v):
+    return v % 2 == 1
+nums = [1,2,3,4,5]
+assert FPO.filter_out(fn=is_odd, l=nums) == [2,4]
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def filter_out(fn,l):
+    &#39;&#39;&#39;
+    ## FPO.filter_out(...)
+    The inverse of FPO.filterIn(..), produces a new list by calling a predicate function with each value in the original list. For each value, if the predicate function returns true (or truthy), the value is omitted from (aka, filtered out of) the new list. Otherwise, the value is included.
+    ### Arguments:
+        fn:     predicate function; called with v (value), i (index), and l (list) named arguments
+        l:    list to filter against
+    ### Returns:
+        list
+    ### Aliases:
+        FPO.reject(..)
+    ### Example:
+        def is_odd(v):
+            return v % 2 == 1
+        nums = [1,2,3,4,5]
+        assert FPO.filter_out(fn=is_odd, l=nums) == [2,4]
+    &#39;&#39;&#39;
+    r = []
+    for e in l:
+        if fn(e) is not True:
+           r.append(e)
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.filter_out_dict"><code class="name flex">
+<span>def <span class="ident">filter_out_dict</span></span>(<span>fn, d)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpofilter_out_dict">FPO.filter_out_dict(&hellip;)</h2>
+<p>The inverse of FPO.filterInObj(..), produces a new dictionary by calling a predicate function with each property value in the original dictionary. For each value, if the predicate function returns true (or truthy), the value is omitted from (aka, filtered out of) the new object. Otherwise, the value is included at the same property name.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     predicate function; called with v (value), i (property name), and o (object) named arguments
+d:      dictionary to filter against
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>dictionary
+</code></pre>
+<h3 id="aliases">Aliases:</h3>
+<pre><code>FPO.reject_dict(..)
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def is_odd(v):
+    return v % 2 == 1
+nums = {'x':1,'y':2,'z':3,'r':4,'l':5}
+assert FPO.filter_out_dict(fn=is_odd, d=nums) == {'y':2,'r':4}
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def filter_out_dict(fn, d):
+    &#39;&#39;&#39;
+    ## FPO.filter_out_dict(...)
+    The inverse of FPO.filterInObj(..), produces a new dictionary by calling a predicate function with each property value in the original dictionary. For each value, if the predicate function returns true (or truthy), the value is omitted from (aka, filtered out of) the new object. Otherwise, the value is included at the same property name.
+    ### Arguments:
+        fn:     predicate function; called with v (value), i (property name), and o (object) named arguments
+        d:      dictionary to filter against
+    ### Returns:
+        dictionary
+    ### Aliases:
+        FPO.reject_dict(..)
+    ### Example:
+        def is_odd(v):
+            return v % 2 == 1
+        nums = {&#39;x&#39;:1,&#39;y&#39;:2,&#39;z&#39;:3,&#39;r&#39;:4,&#39;l&#39;:5}
+        assert FPO.filter_out_dict(fn=is_odd, d=nums) == {&#39;y&#39;:2,&#39;r&#39;:4}
+    &#39;&#39;&#39;
+    r = {}
+    for key,v in d.items():
+        if fn(v) != True:
+            r[key] = v
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.flat_map"><code class="name flex">
+<span>def <span class="ident">flat_map</span></span>(<span>fn, l)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpoflat_map">FPO.flat_map(&hellip;)</h2>
+<p>Similar to map(..), produces a new list by calling a mapper function with each value in the original list. If the mapper function returns a list, this list is flattened (one level) into the overall list.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:  mapper function; called with v (value), i (index), and list(l) named arguments
+l:   list to flat-map against
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>list
+</code></pre>
+<h3 id="aliases">Aliases:</h3>
+<pre><code>FPO.chain(..)
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def split_chars(v): return [*v]
+words = ['hello','world']
+assert split_chars(v=words[0]) == ['h','e','l','l','o']
+assert list(map(split_chars, words)) == [['h','e','l','l','o'],['w','o','r','l','d']]
+assert FPO.flat_map(fn=split_chars, l=words) == ['h','e','l','l','o','w','o','r','l','d']
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def flat_map(fn,l):
+    &#39;&#39;&#39;
+    ## FPO.flat_map(...)
+    Similar to map(..), produces a new list by calling a mapper function with each value in the original list. If the mapper function returns a list, this list is flattened (one level) into the overall list.
+    ### Arguments:
+        fn:  mapper function; called with v (value), i (index), and list(l) named arguments
+        l:   list to flat-map against
+    ### Returns:
+        list
+    ### Aliases:
+        FPO.chain(..)
+    ### Example:
+        def split_chars(v): return [*v]
+        words = [&#39;hello&#39;,&#39;world&#39;]
+        assert split_chars(v=words[0]) == [&#39;h&#39;,&#39;e&#39;,&#39;l&#39;,&#39;l&#39;,&#39;o&#39;]
+        assert list(map(split_chars, words)) == [[&#39;h&#39;,&#39;e&#39;,&#39;l&#39;,&#39;l&#39;,&#39;o&#39;],[&#39;w&#39;,&#39;o&#39;,&#39;r&#39;,&#39;l&#39;,&#39;d&#39;]]
+        assert FPO.flat_map(fn=split_chars, l=words) == [&#39;h&#39;,&#39;e&#39;,&#39;l&#39;,&#39;l&#39;,&#39;o&#39;,&#39;w&#39;,&#39;o&#39;,&#39;r&#39;,&#39;l&#39;,&#39;d&#39;]
+    &#39;&#39;&#39;
+    t = list(map(fn, l))
+    is_all_elements_are_list = True
+    for e in t:
+        if isinstance(e, list) is not True:
+            is_all_elements_are_list = False
+    if is_all_elements_are_list is True:
+        r = []
+        for e in t:
+            r += &#39;&#39;.join(e)
+        return r
+    else:
+        return t</code></pre>
+</details>
+</dd>
+<dt id="fpo.flat_map_dict"><code class="name flex">
+<span>def <span class="ident">flat_map_dict</span></span>(<span>fn, d)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpoflat_map_dict">FPO.flat_map_dict(&hellip;)</h2>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     mapper function; called with v (value), i (property name), and d (dictionary) named arguments
+d:      dictionary to flat-map against
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>dictionary
+</code></pre>
+<h3 id="aliases">Aliases:</h3>
+<pre><code>FPO.chain_dict(..)
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def split_evens_in_half(v, key):
+    if v % 2 == 0:
+    return { key: v/2, key+'_2': v/2 }
+return v
+nums = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+assert split_evens_in_half(v=3, key='c') == 3
+assert split_evens_in_half(v=4, key='d') == {'d':2, 'd_2': 2 }
+assert FPO.map_dict(fn=split_evens_in_half, d=nums) == {'a': 1, 'b': {'b': 1, 'b_2': 1}, 'c': 3, 'd': {'d': 2, 'd_2': 2}}
+assert FPO.flat_map_dict(fn=split_evens_in_half, d=nums) == {'a': 1, 'b': 1, 'b_2': 1, 'c': 3, 'd': 2, 'd_2': 2}
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def flat_map_dict(fn,d):
+    &#39;&#39;&#39;
+    ## FPO.flat_map_dict(...)
+    ### Arguments:
+        fn:     mapper function; called with v (value), i (property name), and d (dictionary) named arguments
+        d:      dictionary to flat-map against
+    ### Returns:
+        dictionary
+    ### Aliases:
+        FPO.chain_dict(..)
+    ### Example:
+        def split_evens_in_half(v, key):
+            if v % 2 == 0:
+            return { key: v/2, key+&#39;_2&#39;: v/2 }
+        return v
+        nums = {&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;c&#39;: 3, &#39;d&#39;: 4}
+        assert split_evens_in_half(v=3, key=&#39;c&#39;) == 3
+        assert split_evens_in_half(v=4, key=&#39;d&#39;) == {&#39;d&#39;:2, &#39;d_2&#39;: 2 }
+        assert FPO.map_dict(fn=split_evens_in_half, d=nums) == {&#39;a&#39;: 1, &#39;b&#39;: {&#39;b&#39;: 1, &#39;b_2&#39;: 1}, &#39;c&#39;: 3, &#39;d&#39;: {&#39;d&#39;: 2, &#39;d_2&#39;: 2}}
+        assert FPO.flat_map_dict(fn=split_evens_in_half, d=nums) == {&#39;a&#39;: 1, &#39;b&#39;: 1, &#39;b_2&#39;: 1, &#39;c&#39;: 3, &#39;d&#39;: 2, &#39;d_2&#39;: 2}
+    &#39;&#39;&#39;
+    dd = map_dict(fn,d)
+    r = {}
+    for key,v in dd.items():
+        if isinstance(v, dict) is True:
+            r.update(v)
+        else:
+            r[key] = v
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.flatten"><code class="name flex">
+<span>def <span class="ident">flatten</span></span>(<span>l, n=-1)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpoflatten">FPO.flatten(&hellip;)</h2>
+<p>Flattens an array of nested arrays. Optionally, specify how many levels of nesting to flatten out.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>l:   list to flat-map against
+n:   (optional) the number of levels of nesting to flatten out; if omitted, defaults to Infinity (to flatten any nested depth)
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>list
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>nums = [1,2,[3,4],[5,[6,7]]]
+assert FPO.flatten(l=nums) == [1,2,3,4,5,6,7]
+assert FPO.flatten(l=nums,n=1) == [1, 2, 3, 4, 5, [6, 7]]
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def flatten(l, n=-1):
+    &#39;&#39;&#39;
+    ## FPO.flatten(...)
+    Flattens an array of nested arrays. Optionally, specify how many levels of nesting to flatten out.
+    ### Arguments:
+        l:   list to flat-map against
+        n:   (optional) the number of levels of nesting to flatten out; if omitted, defaults to Infinity (to flatten any nested depth)
+    ### Returns:
+        list
+    ### Example:
+        nums = [1,2,[3,4],[5,[6,7]]]
+        assert FPO.flatten(l=nums) == [1,2,3,4,5,6,7]
+        assert FPO.flatten(l=nums,n=1) == [1, 2, 3, 4, 5, [6, 7]]
+    &#39;&#39;&#39;
+    if n is 0: return l
+    r = []
+    for e in l:
+        if isinstance(e, list) is True:
+            r += flatten(e, n=(n-1))
+        else:
+            r.append(e)
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.head"><code class="name flex">
+<span>def <span class="ident">head</span></span>(<span>v)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpohead">FPO.head(&hellip;)</h2>
+<p>Returns the element as accessed at index 0 of the value.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>v:   list, tuple, dict, str
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>any
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>nums = [1,2,3,4]
+assert FPO.head(v={'a':42,'b':56}) == 42
+assert FPO.head(v=nums) == 1
+assert FPO.head(v=(42,56)) == 42
+assert FPO.head(v='abc') == 'a'
+assert FPO.head(v=[]) == None
+assert FPO.head(v={}) == None
+assert FPO.head(v='') == None
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def head(v):
+    &#39;&#39;&#39;
+    ## FPO.head(...)
+    Returns the element as accessed at index 0 of the value.
+    ### Arguments:
+        v:   list, tuple, dict, str
+    ### Returns:
+        any
+    ### Example:
+        nums = [1,2,3,4]
+        assert FPO.head(v={&#39;a&#39;:42,&#39;b&#39;:56}) == 42
+        assert FPO.head(v=nums) == 1
+        assert FPO.head(v=(42,56)) == 42
+        assert FPO.head(v=&#39;abc&#39;) == &#39;a&#39;
+        assert FPO.head(v=[]) == None
+        assert FPO.head(v={}) == None
+        assert FPO.head(v=&#39;&#39;) == None
+    &#39;&#39;&#39;
+    # https://docs.python.org/2/library/stdtypes.html#truth-value-testing
+    if bool(v) is not True:
+        return None
+    elif isinstance(v, dict) is True:
+        return next(iter(v.values()))
+    elif isinstance(v, (list, tuple)) is True:
+        return v[0]
+    elif isinstance(v, str) is True:
+        return list(v)[0]</code></pre>
+</details>
+</dd>
+<dt id="fpo.identity"><code class="name flex">
+<span>def <span class="ident">identity</span></span>(<span>d)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpoidentity">FPO.identity(&hellip;)</h2>
+<p>Returns the value given to it. Useful as a default placeholder for certain operations(i.e., composition, reduction).</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>d:   list
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>any
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>FPO.identity( {'v': 42} ) == 42
+</code></pre>
+<p>See also: FPO.constant(&hellip;)</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def identity(d):
+    &#39;&#39;&#39;
+    ## FPO.identity(...)
+    Returns the value given to it. Useful as a default placeholder for certain operations(i.e., composition, reduction).
+    ### Arguments:
+        d:   list
+    ### Returns:
+        any
+    ### Example:
+        FPO.identity( {&#39;v&#39;: 42} ) == 42
+    See also: FPO.constant(...)
+    &#39;&#39;&#39;
+    return next(iter(d.values()))</code></pre>
+</details>
+</dd>
+<dt id="fpo.keep"><code class="name flex">
+<span>def <span class="ident">keep</span></span>(<span>fn, l)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpofilter_in">FPO.filter_in(&hellip;)</h2>
+<p>Commonly known as filter(..), produces a new list by calling a predicate function with each value in the original list. For each value, if the predicate function returns true (or truthy), the value is included in (aka, filtered into) the new list. Otherwise, the value is omitted.
+It is the same as python filter() method</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     predicate function; called with v (value), i (index), and l (list) named arguments
+l:    list to filter against
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>list
+</code></pre>
+<h3 id="aliases">Aliases:</h3>
+<pre><code>FPO.keep(..)
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def is_odd(v):
+    return v % 2 == 1
+nums = [1,2,3,4,5]
+assert FPO.filter_in(fn=is_odd, l=nums) == [1,3,5]
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def filter_in(fn,l):
+    &#39;&#39;&#39;
+    ## FPO.filter_in(...)
+    Commonly known as filter(..), produces a new list by calling a predicate function with each value in the original list. For each value, if the predicate function returns true (or truthy), the value is included in (aka, filtered into) the new list. Otherwise, the value is omitted.
+    It is the same as python filter() method
+    ### Arguments:
+        fn:     predicate function; called with v (value), i (index), and l (list) named arguments
+        l:    list to filter against
+    ### Returns:
+        list
+    ### Aliases:
+        FPO.keep(..)
+    ### Example:
+        def is_odd(v):
+            return v % 2 == 1
+        nums = [1,2,3,4,5]
+        assert FPO.filter_in(fn=is_odd, l=nums) == [1,3,5]
+    &#39;&#39;&#39;
+    r = []
+    for e in l:
+        if fn(e):
+           r.append(e)
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.keep_dict"><code class="name flex">
+<span>def <span class="ident">keep_dict</span></span>(<span>fn, d)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpofilter_out_dict">FPO.filter_out_dict(&hellip;)</h2>
+<p>The inverse of FPO.filterInObj(..), produces a new dictionary by calling a predicate function with each property value in the original dictionary. For each value, if the predicate function returns true (or truthy), the value is omitted from (aka, filtered out of) the new object. Otherwise, the value is included at the same property name.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     predicate function; called with v (value), i (property name), and o (object) named arguments
+d:      dictionary to filter against
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>dictionary
+</code></pre>
+<h3 id="aliases">Aliases:</h3>
+<pre><code>FPO.reject_dict(..)
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def is_odd(v):
+    return v % 2 == 1
+nums = {'x':1,'y':2,'z':3,'r':4,'l':5}
+assert FPO.filter_out_dict(fn=is_odd, d=nums) == {'y':2,'r':4}
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def filter_out_dict(fn, d):
+    &#39;&#39;&#39;
+    ## FPO.filter_out_dict(...)
+    The inverse of FPO.filterInObj(..), produces a new dictionary by calling a predicate function with each property value in the original dictionary. For each value, if the predicate function returns true (or truthy), the value is omitted from (aka, filtered out of) the new object. Otherwise, the value is included at the same property name.
+    ### Arguments:
+        fn:     predicate function; called with v (value), i (property name), and o (object) named arguments
+        d:      dictionary to filter against
+    ### Returns:
+        dictionary
+    ### Aliases:
+        FPO.reject_dict(..)
+    ### Example:
+        def is_odd(v):
+            return v % 2 == 1
+        nums = {&#39;x&#39;:1,&#39;y&#39;:2,&#39;z&#39;:3,&#39;r&#39;:4,&#39;l&#39;:5}
+        assert FPO.filter_out_dict(fn=is_odd, d=nums) == {&#39;y&#39;:2,&#39;r&#39;:4}
+    &#39;&#39;&#39;
+    r = {}
+    for key,v in d.items():
+        if fn(v) != True:
+            r[key] = v
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.map_dict"><code class="name flex">
+<span>def <span class="ident">map_dict</span></span>(<span>fn, d)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpomap_dict">FPO.map_dict(&hellip;)</h2>
+<p>Produces a new dictionary by calling a mapper function with each property value in the original dictionary. The value the mapper function returns is inserted in the new object at that same property name. The new dictionary will always have the same number of properties as the original dictionary.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     mapper function; called with v (value), i (index), and d (dictionary) named arguments
+d:   dictionary to-map against
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>dictionary
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def double(v, key): return v * 2
+nums = {'a': 1, 'b': 2, 'c': 3}
+assert FPO.map_dict(fn=double,d=nums) == {'a': 2, 'b': 4, 'c': 6}
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def map_dict(fn, d):
+    &#39;&#39;&#39;
+    ## FPO.map_dict(...)
+    Produces a new dictionary by calling a mapper function with each property value in the original dictionary. The value the mapper function returns is inserted in the new object at that same property name. The new dictionary will always have the same number of properties as the original dictionary.
+    ### Arguments:
+        fn:     mapper function; called with v (value), i (index), and d (dictionary) named arguments
+        d:   dictionary to-map against
+    ### Returns:
+        dictionary
+    ### Example:
+        def double(v, key): return v * 2
+        nums = {&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;c&#39;: 3}
+        assert FPO.map_dict(fn=double,d=nums) == {&#39;a&#39;: 2, &#39;b&#39;: 4, &#39;c&#39;: 6}
+    &#39;&#39;&#39;
+    r = {}
+    for key, v in d.items():
+        r[key] = fn(v=v,key=key)
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.map_list"><code class="name flex">
+<span>def <span class="ident">map_list</span></span>(<span>fn, l)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpomap_list">FPO.map_list(&hellip;)</h2>
+<p>Produces a new list by calling a mapper function with each value in the original list. The value the mapper function returns is inserted in the new list at that same position. The new list will always be the same length as the original list.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn: mapper function; called with v (value) and l (list) named arguments
+l:  list to map against
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>list
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def double(v): return v * 2
+nums = [1,2,3]
+assert FPO.map_list(fn=double,l=nums) == [2,4,6]
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def map_list(fn, l):
+    &#39;&#39;&#39;
+    ## FPO.map_list(...)
+    Produces a new list by calling a mapper function with each value in the original list. The value the mapper function returns is inserted in the new list at that same position. The new list will always be the same length as the original list.
+    ### Arguments:
+        fn: mapper function; called with v (value) and l (list) named arguments
+        l:  list to map against
+    ### Returns:
+        list
+    ### Example:
+        def double(v): return v * 2
+        nums = [1,2,3]
+        assert FPO.map_list(fn=double,l=nums) == [2,4,6]
+    &#39;&#39;&#39;
+    r = []
+    for v in l:
+        r.append(fn(v=v))
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.memoise"><code class="name flex">
+<span>def <span class="ident">memoise</span></span>(<span>fn, n=-1)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpomemoize">FPO.memoize(&hellip;)</h2>
+<p>For performance optimization reasons, wraps a function such that it remembers each set of arguments passed to it, associated with that underlying return value. If the wrapped function is called subsequent times with the same set of arguments, the cached return value is returned instead of being recomputed. Each wrapped function instance has its own separate cache, even if wrapping the same original function multiple times.</p>
+<p>A set of arguments is "remembered" by being hashed to a string value to use as a cache key. This hashing is done internally with json.dumps(..), which is fast and works with many common value types. However, this hashing is by no means bullet-proof for all types, and does not guarantee collision-free. Use caution: generally, you should only use primitives (number, string, boolean, null, and None) or simple objects (dict, list) as arguments. If you use objects, always make sure to list properties in the same order to ensure proper hashing.</p>
+<p>Unary functions (single argument; n of 1) with a primitive argument are the fastest for memoisation, so if possible, try to design functions that way. In these cases, specifying n as 1 will help ensure the best possible performance.</p>
+<p>Warning: Be aware that if 1 is initially specified (or detected) for n, additional arguments later passed to the wrapped function are not considered in the memoisation hashing, though they will still be passed to the underlying function as-is. This may cause unexpected results (false-positives on cache hits); always make sure n matches the expected number of arguments.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn: function to wrap
+n:  number of arguments to memoize; if omitted, tries to detect the arity (fn.length) to use.
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>list
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def sum(x,y):
+    return x + y + random.randint(1,101)
+fa = FPO.memoise(fn=sum)
+fb = FPO.memoise(fn=sum, n=1)
+cached_a = fa(2,3)
+assert fa(2,3) == cached_a
+cached_b = fb(2,3)
+assert fb(2,4) == cached_b
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def memoise(fn,n=-1):
+    &#39;&#39;&#39;
+    ## FPO.memoize(...)
+    For performance optimization reasons, wraps a function such that it remembers each set of arguments passed to it, associated with that underlying return value. If the wrapped function is called subsequent times with the same set of arguments, the cached return value is returned instead of being recomputed. Each wrapped function instance has its own separate cache, even if wrapping the same original function multiple times.
+
+    A set of arguments is &#34;remembered&#34; by being hashed to a string value to use as a cache key. This hashing is done internally with json.dumps(..), which is fast and works with many common value types. However, this hashing is by no means bullet-proof for all types, and does not guarantee collision-free. Use caution: generally, you should only use primitives (number, string, boolean, null, and None) or simple objects (dict, list) as arguments. If you use objects, always make sure to list properties in the same order to ensure proper hashing.
+
+    Unary functions (single argument; n of 1) with a primitive argument are the fastest for memoisation, so if possible, try to design functions that way. In these cases, specifying n as 1 will help ensure the best possible performance.
+
+    Warning: Be aware that if 1 is initially specified (or detected) for n, additional arguments later passed to the wrapped function are not considered in the memoisation hashing, though they will still be passed to the underlying function as-is. This may cause unexpected results (false-positives on cache hits); always make sure n matches the expected number of arguments.
+    ### Arguments:
+        fn: function to wrap
+        n:  number of arguments to memoize; if omitted, tries to detect the arity (fn.length) to use.
+    ### Returns:
+        list
+    ### Example:
+        def sum(x,y):
+            return x + y + random.randint(1,101)
+        fa = FPO.memoise(fn=sum)
+        fb = FPO.memoise(fn=sum, n=1)
+        cached_a = fa(2,3)
+        assert fa(2,3) == cached_a
+        cached_b = fb(2,3)
+        assert fb(2,4) == cached_b
+    &#39;&#39;&#39;
+    cache = {}
+    def memoised(*args, **kwargs):
+        nonlocal cache
+        if bool(args) is True:
+            key = json.dumps(take(args, n) if n &gt; 0 else args, sort_keys=True, separators=(&#39;,&#39;,&#39;:&#39;))
+        else:
+            key = json.dumps(take(kwargs, n) if n &gt; 0 else kwargs, sort_keys=True, separators=(&#39;,&#39;,&#39;:&#39;))
+        if key in cache:
+            return cache[key]
+        else:
+            cache[key] = fn(*args, **kwargs)
+            return cache[key]
+    return memoised</code></pre>
+</details>
+</dd>
+<dt id="fpo.n_ary"><code class="name flex">
+<span>def <span class="ident">n_ary</span></span>(<span>fn, props)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpon_ary">FPO.n_ary(&hellip;)</h2>
+<p>Wraps a function to restrict its inputs to only the named arguments as specified. It is similar to FPO.pluck.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     function to wrap
+props:  list of property names to allow as named arguments; if empty, produces a "nullary" function -- won't receive any arguments.
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def foo(d): return d
+f = FPO.n_ary(fn=foo, props=['x','y','z'])
+assert f({'x': 1, 'y': 2, 'z': 3, 'w': 4}) == {'x': 1, 'y': 2, 'z': 3}
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def n_ary(fn,props):
+    &#39;&#39;&#39;
+    ## FPO.n_ary(...)
+    Wraps a function to restrict its inputs to only the named arguments as specified. It is similar to FPO.pluck.
+    ### Arguments:
+        fn:     function to wrap
+        props:  list of property names to allow as named arguments; if empty, produces a &#34;nullary&#34; function -- won&#39;t receive any arguments.
+    ### Returns:
+        function
+    ### Example:
+        def foo(d): return d
+        f = FPO.n_ary(fn=foo, props=[&#39;x&#39;,&#39;y&#39;,&#39;z&#39;])
+        assert f({&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3, &#39;w&#39;: 4}) == {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3}
+    &#39;&#39;&#39;
+    def n_aried(d):
+        if bool(props) is not True:
+            return fn()
+        else:
+            r = {}
+            for key in props:
+                r[key] = d[key]
+            return fn(r)
+    return n_aried</code></pre>
+</details>
+</dd>
+<dt id="fpo.partial"><code class="name flex">
+<span>def <span class="ident">partial</span></span>(<span>fn, args)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpopartial">FPO.partial(&hellip;)</h2>
+<p>Wraps a function with a new function that already has some of the arguments pre-specified, and is waiting for the rest of them on the next call. Unlike FPO.curry(..), you must specify all the remaining arguments on the next call of the partially-applied function.</p>
+<p>With traditional FP libraries, partial(..) works in left-to-right order (as does FPO.std.partial(..)). That's why typically you also need a FPO.std.partialRight(..) if you want to partially-apply from the opposite direction.</p>
+<p>However, using named arguments style &ndash; after all, that is the whole point of FPO! &ndash; order doesn't matter. For familiarity sake, FPO.partialRight(..) is provided, but it's just an alias to FPO.partial(..).</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     function to partially-apply
+args:   object containing the arguments to apply now
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def foo(x,y,z): return x + y + z
+f = FPO.partial(fn=foo, args={'x': 'a'});
+assert f(y='b', z='c') == 'abc'
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def partial(fn, args):
+    &#39;&#39;&#39;
+    ## FPO.partial(...)
+    Wraps a function with a new function that already has some of the arguments pre-specified, and is waiting for the rest of them on the next call. Unlike FPO.curry(..), you must specify all the remaining arguments on the next call of the partially-applied function.
+
+    With traditional FP libraries, partial(..) works in left-to-right order (as does FPO.std.partial(..)). That&#39;s why typically you also need a FPO.std.partialRight(..) if you want to partially-apply from the opposite direction.
+
+    However, using named arguments style -- after all, that is the whole point of FPO! -- order doesn&#39;t matter. For familiarity sake, FPO.partialRight(..) is provided, but it&#39;s just an alias to FPO.partial(..).
+    ### Arguments:
+        fn:     function to partially-apply
+        args:   object containing the arguments to apply now
+    ### Returns:
+        function
+    ### Example:
+        def foo(x,y,z): return x + y + z
+        f = FPO.partial(fn=foo, args={&#39;x&#39;: &#39;a&#39;});
+        assert f(y=&#39;b&#39;, z=&#39;c&#39;) == &#39;abc&#39;
+    &#39;&#39;&#39;
+    def partialed(**kwargs):
+        l_kwargs = copy.copy(kwargs)
+        l_kwargs.update(args)
+        return fn(**l_kwargs)
+    return partialed</code></pre>
+</details>
+</dd>
+<dt id="fpo.pick"><code class="name flex">
+<span>def <span class="ident">pick</span></span>(<span>d, props)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpopick">FPO.pick(&hellip;)</h2>
+<p>Returns a new dictionary with only the specified properties from the original dictionary. Includes only properties from the original dictionary.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>d:      dictionary to pick properties from
+props:  list of property names to pick from the object; if a property does not exist on the original dictionary, it is not added to the new dictionary, unlike FPO.pickAll(..).
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>dictionary
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>d = {'x': 1, 'y': 2, 'z': 3, 'w': 4}
+assert FPO.pick(d,props=['x','y']) == {'x': 1, 'y': 2}
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def pick(d,props):
+    &#39;&#39;&#39;
+    ## FPO.pick(...)
+    Returns a new dictionary with only the specified properties from the original dictionary. Includes only properties from the original dictionary.
+    ### Arguments:
+        d:      dictionary to pick properties from
+        props:  list of property names to pick from the object; if a property does not exist on the original dictionary, it is not added to the new dictionary, unlike FPO.pickAll(..).
+    ### Returns:
+        dictionary
+    ### Example:
+        d = {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3, &#39;w&#39;: 4}
+        assert FPO.pick(d,props=[&#39;x&#39;,&#39;y&#39;]) == {&#39;x&#39;: 1, &#39;y&#39;: 2}
+    &#39;&#39;&#39;
+    r = {}
+    for i in props:
+        if i in d:
+            r[i] = d[i]
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.pick_all"><code class="name flex">
+<span>def <span class="ident">pick_all</span></span>(<span>d, props)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpopick_all">FPO.pick_all(&hellip;)</h2>
+<p>Returns a new dictionary with only the specified properties from the original dictionary. Includes all specified properties.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>d:      dictionary to pick properties from
+props:  list of property names to pick from the dictionary; even if a property does not exist on the original dictionary, it is still added to the new object with an undefined value, unlike FPO.pick(..).
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>dictionary
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>d = {'x': 1, 'y': 2, 'z': 3, 'w': 4}
+assert FPO.pick_all(d,props=['x','y','r']) == {'x': 1, 'y': 2, 'r': None}
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def pick_all(d, props):
+    &#39;&#39;&#39;
+    ## FPO.pick_all(...)
+    Returns a new dictionary with only the specified properties from the original dictionary. Includes all specified properties.
+    ### Arguments:
+        d:      dictionary to pick properties from
+        props:  list of property names to pick from the dictionary; even if a property does not exist on the original dictionary, it is still added to the new object with an undefined value, unlike FPO.pick(..).
+    ### Returns:
+        dictionary
+    ### Example:
+        d = {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3, &#39;w&#39;: 4}
+        assert FPO.pick_all(d,props=[&#39;x&#39;,&#39;y&#39;,&#39;r&#39;]) == {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;r&#39;: None}
+    &#39;&#39;&#39;
+    r = {}
+    for i in props:
+        if i in d:
+            r[i] = d[i]
+        else:
+            r[i] = None
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.pipe"><code class="name flex">
+<span>def <span class="ident">pipe</span></span>(<span>fns)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpopipe">FPO.pipe(&hellip;)</h2>
+<p>Produces a new function that's the composition of a list of functions. Functions are composed left-to-right (unlike FPO.compose(..)) from the array.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fns:    list of functions
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>f = FPO.pipe([
+    lambda v: v+2,
+    lambda v: v*2,
+    lambda v: v-2,
+])
+assert f(10) == 22
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def pipe(fns):
+    &#39;&#39;&#39;
+    ## FPO.pipe(...)
+    Produces a new function that&#39;s the composition of a list of functions. Functions are composed left-to-right (unlike FPO.compose(..)) from the array.
+    ### Arguments:
+        fns:    list of functions
+    ### Returns:
+        function
+    ### Example:
+        f = FPO.pipe([
+            lambda v: v+2,
+            lambda v: v*2,
+            lambda v: v-2,
+        ])
+        assert f(10) == 22
+    &#39;&#39;&#39;
+    def piped(v):
+        result = v
+        for fn in fns:
+            result = fn(v=result)
+        return result
+    return piped</code></pre>
+</details>
+</dd>
+<dt id="fpo.pluck"><code class="name flex">
+<span>def <span class="ident">pluck</span></span>(<span>l, *args)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpopluck">FPO.pluck(&hellip;)</h2>
+<p>Plucks properties form the given list and return a list of properties' values</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>l:   list
+*args:  properties
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>a list of values
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>l = [{'x': 1, 'y':2}, {'x': 3, 'y': 4}]
+assert FPO.pluck(l, 'x', 'y') == [[1, 2], [3, 4]]
+assert FPO.pluck(l, 'x') == [1, 3]
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def pluck(l, *args):
+    &#39;&#39;&#39;
+    ## FPO.pluck(...)
+    Plucks properties form the given list and return a list of properties&#39; values
+    ### Arguments:
+        l:   list
+        *args:  properties
+    ### Returns:
+        a list of values
+    ### Example:
+        l = [{&#39;x&#39;: 1, &#39;y&#39;:2}, {&#39;x&#39;: 3, &#39;y&#39;: 4}]
+        assert FPO.pluck(l, &#39;x&#39;, &#39;y&#39;) == [[1, 2], [3, 4]]
+        assert FPO.pluck(l, &#39;x&#39;) == [1, 3]
+    &#39;&#39;&#39;
+    fn = lambda d, *args: [d[arg] for arg in args]
+    r = [fn(o, *args) for o in l]
+    if len(args) == 1:
+        return [v[0] for v in r]
+    else:
+        return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.prop"><code class="name flex">
+<span>def <span class="ident">prop</span></span>(<span>d, prop)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpoprop">FPO.prop(&hellip;)</h2>
+<p>Extracts a property's value from a dictionary.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>d:    dictionary to pull the property value from
+prop: property name to pull from the dictionary
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>any
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>obj = {'x': 1, 'y': 2, 'z': 3, 'w': 4}
+assert FPO.prop(d=obj, prop='y') == 2
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def prop(d,prop):
+    &#39;&#39;&#39;
+    ## FPO.prop(...)
+    Extracts a property&#39;s value from a dictionary.
+    ### Arguments:
+        d:    dictionary to pull the property value from
+        prop: property name to pull from the dictionary
+    ### Returns:
+        any
+    ### Example:
+        obj = {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3, &#39;w&#39;: 4}
+        assert FPO.prop(d=obj, prop=&#39;y&#39;) == 2
+    &#39;&#39;&#39;
+    return d[prop]</code></pre>
+</details>
+</dd>
+<dt id="fpo.reassoc"><code class="name flex">
+<span>def <span class="ident">reassoc</span></span>(<span>d, props)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fporeassoc">FPO.reassoc(&hellip;)</h2>
+<p>Like a mixture between FPO.pick(..) and FPO.setProp(..), creates a new dictionary that has properties remapped from original names to new names. Any properties present on the original dictionary that aren't remapped are copied with the same name.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>d:      dictionary to remap properties from
+props:  dictionary whose key/value pairs are sourceProp: targetProp remappings
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>dictionary
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>obj = dict(zip(['x','y','z'],[1, 2, 3]))
+assert FPO.reassoc(d=obj, props={'x': 'a', 'y': 'b'}) == {'a': 1, 'b': 2, 'z': 3}
+assert obj == {'x': 1, 'y': 2, 'z': 3}
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def reassoc(d,props):
+    &#39;&#39;&#39;
+    ## FPO.reassoc(...)
+    Like a mixture between FPO.pick(..) and FPO.setProp(..), creates a new dictionary that has properties remapped from original names to new names. Any properties present on the original dictionary that aren&#39;t remapped are copied with the same name.
+    ### Arguments:
+        d:      dictionary to remap properties from
+        props:  dictionary whose key/value pairs are sourceProp: targetProp remappings
+    ### Returns:
+        dictionary
+    ### Example:
+        obj = dict(zip([&#39;x&#39;,&#39;y&#39;,&#39;z&#39;],[1, 2, 3]))
+        assert FPO.reassoc(d=obj, props={&#39;x&#39;: &#39;a&#39;, &#39;y&#39;: &#39;b&#39;}) == {&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;z&#39;: 3}
+        assert obj == {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3}
+    &#39;&#39;&#39;
+    r = {}
+    for k,v in d.items():
+        if k in props:
+            r[props[k]] = d[k]
+        else:
+            r[k] = d[k]
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.reduce"><code class="name flex">
+<span>def <span class="ident">reduce</span></span>(<span>fn, l=[], v=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fporeduce">FPO.reduce(..)</h2>
+<p>Processes a list from left-to-right (unlike FPO.reduceRight(..)), successively combining (aka "reducing", "folding") two values into one, until the entire list has been reduced to a single value. An initial value for the reduction can optionally be provided.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn: reducer function; called with acc (acculumator), v (value) and l (list) named arguments
+l:  list to reduce
+v:  (optional) initial value to use for the reduction; if provided, the first reduction will pass to the reducer the initial value as the acc and the first value from the array as v. Otherwise, the first reduction has the first value of the array as acc and the second value of the array as v.
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>any
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def str_concat(acc,v):
+    return acc + v
+vowels = ["a","e","i","o","u","y"]
+assert FPO.reduce(fn=str_concat, l=vowels) == 'aeiouy'
+assert FPO.reduce(fn=str_concat, l=vowels, v='vowels: ') == 'vowels: aeiouy'
+assert vowels == ["a","e","i","o","u","y"]
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def reduce(fn,l=[],v=None):
+    &#39;&#39;&#39;
+    ## FPO.reduce(..)
+    Processes a list from left-to-right (unlike FPO.reduceRight(..)), successively combining (aka &#34;reducing&#34;, &#34;folding&#34;) two values into one, until the entire list has been reduced to a single value. An initial value for the reduction can optionally be provided.
+    ### Arguments:
+        fn: reducer function; called with acc (acculumator), v (value) and l (list) named arguments
+        l:  list to reduce
+        v:  (optional) initial value to use for the reduction; if provided, the first reduction will pass to the reducer the initial value as the acc and the first value from the array as v. Otherwise, the first reduction has the first value of the array as acc and the second value of the array as v.
+    ### Returns:
+        any
+    ### Example:
+        def str_concat(acc,v):
+            return acc + v
+        vowels = [&#34;a&#34;,&#34;e&#34;,&#34;i&#34;,&#34;o&#34;,&#34;u&#34;,&#34;y&#34;]
+        assert FPO.reduce(fn=str_concat, l=vowels) == &#39;aeiouy&#39;
+        assert FPO.reduce(fn=str_concat, l=vowels, v=&#39;vowels: &#39;) == &#39;vowels: aeiouy&#39;
+        assert vowels == [&#34;a&#34;,&#34;e&#34;,&#34;i&#34;,&#34;o&#34;,&#34;u&#34;,&#34;y&#34;]
+    &#39;&#39;&#39;
+    orig_l = l
+    initial_v = v
+    if initial_v is None and len(l) &gt; 0:
+        initial_v = l[0]
+        l = l[1:]
+    for e in l:
+        initial_v = fn(acc=initial_v, v=e)
+    return initial_v</code></pre>
+</details>
+</dd>
+<dt id="fpo.reduce_dict"><code class="name flex">
+<span>def <span class="ident">reduce_dict</span></span>(<span>fn, d, v=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fporeduce_dict">FPO.reduce_dict(..)</h2>
+<p>Processes an dictionary's properties (in enumeration order), successively combining (aka "reducing", "folding") two values into one, until all the dictionary's properties have been reduced to a single value. An initial value for the reduction can optionally be provided.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn: reducer function; called with acc (acculumator), v (value) and l (list) named arguments
+d:  dictionary to reduce
+v:  (optional) initial value to use for the reduction; if provided, the first reduction will pass to the reducer the initial value as the acc and the first value from the array as v. Otherwise, the first reduction has the first value of the array as acc and the second value of the array as v.
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>any
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def str_concat(acc,v):
+    return acc + v
+vowels = ["a","e","i","o","u","y"]
+assert FPO.reduce(fn=str_concat, l=vowels) == 'aeiouy'
+assert FPO.reduce(fn=str_concat, l=vowels, v='vowels: ') == 'vowels: aeiouy'
+assert vowels == ["a","e","i","o","u","y"]
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def reduce_dict(fn,d,v=None):
+    &#39;&#39;&#39;
+    ## FPO.reduce_dict(..)
+    Processes an dictionary&#39;s properties (in enumeration order), successively combining (aka &#34;reducing&#34;, &#34;folding&#34;) two values into one, until all the dictionary&#39;s properties have been reduced to a single value. An initial value for the reduction can optionally be provided.
+    ### Arguments:
+        fn: reducer function; called with acc (acculumator), v (value) and l (list) named arguments
+        d:  dictionary to reduce
+        v:  (optional) initial value to use for the reduction; if provided, the first reduction will pass to the reducer the initial value as the acc and the first value from the array as v. Otherwise, the first reduction has the first value of the array as acc and the second value of the array as v.
+    ### Returns:
+        any
+    ### Example:
+        def str_concat(acc,v):
+            return acc + v
+        vowels = [&#34;a&#34;,&#34;e&#34;,&#34;i&#34;,&#34;o&#34;,&#34;u&#34;,&#34;y&#34;]
+        assert FPO.reduce(fn=str_concat, l=vowels) == &#39;aeiouy&#39;
+        assert FPO.reduce(fn=str_concat, l=vowels, v=&#39;vowels: &#39;) == &#39;vowels: aeiouy&#39;
+        assert vowels == [&#34;a&#34;,&#34;e&#34;,&#34;i&#34;,&#34;o&#34;,&#34;u&#34;,&#34;y&#34;]
+    &#39;&#39;&#39;
+    init_k = next(iter(d))
+    r = d[init_k]
+    for key,value in d.items():
+        if key is not init_k:
+            r = fn(acc=r, v=value)
+    if bool(v) is True:
+        return v + r
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.reduce_right"><code class="name flex">
+<span>def <span class="ident">reduce_right</span></span>(<span>fn, l, v=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fporeduce_right">FPO.reduce_right(..)</h2>
+<p>Processes a list from right-to-left (unlike FPO.reduce(..)), successively combining (aka "reducing", "folding") two values into one, until the entire list has been reduced to a single value.
+An initial value for the reduction can optionally be provided. If the array is empty, the initial value is returned (or undefined if it was omitted).</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn: reducer function; called with acc (acculumator), v (value) and l (list) named arguments
+l:  list to reduce
+v:  (optional) initial value to use for the reduction; if provided, the first reduction will pass to the reducer the initial value as the acc and the first value from the array as v. Otherwise, the first reduction has the first value of the array as acc and the second value of the array as v.
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>any
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def str_concat(acc,v):
+    return acc + v
+vowels = ["a","e","i","o","u","y"]
+assert FPO.reduce_right(fn=str_concat, l=vowels) == 'yuoiea'
+assert FPO.reduce_right(fn=str_concat, l=vowels, v='vowels: ') == 'vowels: yuoiea'
+assert vowels == ["a","e","i","o","u","y"]
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def reduce_right(fn,l,v=None):
+    &#39;&#39;&#39;
+    ## FPO.reduce_right(..)
+    Processes a list from right-to-left (unlike FPO.reduce(..)), successively combining (aka &#34;reducing&#34;, &#34;folding&#34;) two values into one, until the entire list has been reduced to a single value.
+    An initial value for the reduction can optionally be provided. If the array is empty, the initial value is returned (or undefined if it was omitted).
+    ### Arguments:
+        fn: reducer function; called with acc (acculumator), v (value) and l (list) named arguments
+        l:  list to reduce
+        v:  (optional) initial value to use for the reduction; if provided, the first reduction will pass to the reducer the initial value as the acc and the first value from the array as v. Otherwise, the first reduction has the first value of the array as acc and the second value of the array as v.
+    ### Returns:
+        any
+    ### Example:
+        def str_concat(acc,v):
+            return acc + v
+        vowels = [&#34;a&#34;,&#34;e&#34;,&#34;i&#34;,&#34;o&#34;,&#34;u&#34;,&#34;y&#34;]
+        assert FPO.reduce_right(fn=str_concat, l=vowels) == &#39;yuoiea&#39;
+        assert FPO.reduce_right(fn=str_concat, l=vowels, v=&#39;vowels: &#39;) == &#39;vowels: yuoiea&#39;
+        assert vowels == [&#34;a&#34;,&#34;e&#34;,&#34;i&#34;,&#34;o&#34;,&#34;u&#34;,&#34;y&#34;]
+    &#39;&#39;&#39;
+    rl = l[::-1]
+    r = rl[0]
+    for e in rl[1:]:
+        r = fn(acc=r, v=e)
+    if bool(v) is True:
+        return v + r
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.reject"><code class="name flex">
+<span>def <span class="ident">reject</span></span>(<span>fn, l)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpofilter_out">FPO.filter_out(&hellip;)</h2>
+<p>The inverse of FPO.filterIn(..), produces a new list by calling a predicate function with each value in the original list. For each value, if the predicate function returns true (or truthy), the value is omitted from (aka, filtered out of) the new list. Otherwise, the value is included.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     predicate function; called with v (value), i (index), and l (list) named arguments
+l:    list to filter against
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>list
+</code></pre>
+<h3 id="aliases">Aliases:</h3>
+<pre><code>FPO.reject(..)
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def is_odd(v):
+    return v % 2 == 1
+nums = [1,2,3,4,5]
+assert FPO.filter_out(fn=is_odd, l=nums) == [2,4]
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def filter_out(fn,l):
+    &#39;&#39;&#39;
+    ## FPO.filter_out(...)
+    The inverse of FPO.filterIn(..), produces a new list by calling a predicate function with each value in the original list. For each value, if the predicate function returns true (or truthy), the value is omitted from (aka, filtered out of) the new list. Otherwise, the value is included.
+    ### Arguments:
+        fn:     predicate function; called with v (value), i (index), and l (list) named arguments
+        l:    list to filter against
+    ### Returns:
+        list
+    ### Aliases:
+        FPO.reject(..)
+    ### Example:
+        def is_odd(v):
+            return v % 2 == 1
+        nums = [1,2,3,4,5]
+        assert FPO.filter_out(fn=is_odd, l=nums) == [2,4]
+    &#39;&#39;&#39;
+    r = []
+    for e in l:
+        if fn(e) is not True:
+           r.append(e)
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.remap"><code class="name flex">
+<span>def <span class="ident">remap</span></span>(<span>fn, args)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fporemap">FPO.remap(..)</h2>
+<p>Remaps the expected named arguments of a function. This is useful to adapt a function to be used if the arguments passed in will be different than what the function expects.
+A common usecase will be to adapt a function so it's suitable for use as a mapper/predicate/reducer function, or for composition.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     function to remap
+args:   dictionary whose key/value pairs represent the origArgName: newArgName mappings
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def double(x): return x * 2
+def increment(y): return y + 1
+def div3(z): return z / 3
+f = FPO.remap(fn=double, args=dict(v='x'))
+g = FPO.remap(fn=increment, args=dict(v='y'))
+h = FPO.remap(fn=div3, args=dict(v='z'))
+m = FPO.compose(fns=[h,g,f])
+assert f(v=3) == 6
+assert m(v=4) == 3
+assert FPO.map_list(g, [1,4,7,10,13]) == [2,5,8,11,14]
+assert FPO.map_list(m, [1,4,7,10,13]) == [1,3,5,7,9]
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def remap(fn, args):
+    &#39;&#39;&#39;
+    ## FPO.remap(..)
+    Remaps the expected named arguments of a function. This is useful to adapt a function to be used if the arguments passed in will be different than what the function expects.
+    A common usecase will be to adapt a function so it&#39;s suitable for use as a mapper/predicate/reducer function, or for composition.
+    ### Arguments:
+        fn:     function to remap
+        args:   dictionary whose key/value pairs represent the origArgName: newArgName mappings
+    ### Returns:
+        function
+    ### Example:
+        def double(x): return x * 2
+        def increment(y): return y + 1
+        def div3(z): return z / 3
+        f = FPO.remap(fn=double, args=dict(v=&#39;x&#39;))
+        g = FPO.remap(fn=increment, args=dict(v=&#39;y&#39;))
+        h = FPO.remap(fn=div3, args=dict(v=&#39;z&#39;))
+        m = FPO.compose(fns=[h,g,f])
+        assert f(v=3) == 6
+        assert m(v=4) == 3
+        assert FPO.map_list(g, [1,4,7,10,13]) == [2,5,8,11,14]
+        assert FPO.map_list(m, [1,4,7,10,13]) == [1,3,5,7,9]
+    &#39;&#39;&#39;
+    def remaped(**kwargs):
+        l_kwargs = reassoc(kwargs,props=args)
+        return fn(**l_kwargs)
+    return remaped</code></pre>
+</details>
+</dd>
+<dt id="fpo.set_prop"><code class="name flex">
+<span>def <span class="ident">set_prop</span></span>(<span>d, prop, v)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fposet_prop">FPO.set_prop(&hellip;)</h2>
+<p>Creates a shallow clone of a dictionary, assigning the specified property value to the new dictionary.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>d:      (optional) object to clone; if omitted, defaults to a new empty dictionary
+prop:   property name where to set the value on the new dictionary
+v:      value
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>any
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>obj = dict(x=1, y=2,z=3)
+assert FPO.set_prop(d=obj, prop='w', v=4) == {'x': 1, 'y': 2, 'z': 3, 'w': 4}
+assert obj == {'x': 1, 'y': 2, 'z': 3}
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def set_prop(d,prop,v):
+    &#39;&#39;&#39;
+    ##FPO.set_prop(...)
+    Creates a shallow clone of a dictionary, assigning the specified property value to the new dictionary.
+    ### Arguments:
+        d:      (optional) object to clone; if omitted, defaults to a new empty dictionary
+        prop:   property name where to set the value on the new dictionary
+        v:      value
+    ### Returns:
+        any
+    ### Example:
+        obj = dict(x=1, y=2,z=3)
+        assert FPO.set_prop(d=obj, prop=&#39;w&#39;, v=4) == {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3, &#39;w&#39;: 4}
+        assert obj == {&#39;x&#39;: 1, &#39;y&#39;: 2, &#39;z&#39;: 3}
+    &#39;&#39;&#39;
+    if bool(d) is True:
+        r = copy.copy(d)
+    else:
+        r = {}
+    r[prop] = v
+    return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.tail"><code class="name flex">
+<span>def <span class="ident">tail</span></span>(<span>v)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpotail">FPO.tail(&hellip;)</h2>
+<p>Returns everything else in the value except the element as accessed at index 0; basically the inverse of FPO.head(..)</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>v:   list/string/dictionary
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>any
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>assert FPO.tail(v={'a':42,'b':56,'c':34}) == {'b':56,'c':34}
+assert FPO.tail(v=[1,2,3,4]) == [2,3,4]
+assert FPO.tail(v=(42,56,32)) == (56,32)
+assert FPO.tail(v='abc') == 'bc'
+assert FPO.tail(v=[]) == None
+assert FPO.tail(v={}) == None
+assert FPO.tail(v='') == None
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def tail(v):
+    &#39;&#39;&#39;
+    ## FPO.tail(...)
+    Returns everything else in the value except the element as accessed at index 0; basically the inverse of FPO.head(..)
+    ### Arguments:
+        v:   list/string/dictionary
+    ### Returns:
+        any
+    ### Example:
+        assert FPO.tail(v={&#39;a&#39;:42,&#39;b&#39;:56,&#39;c&#39;:34}) == {&#39;b&#39;:56,&#39;c&#39;:34}
+        assert FPO.tail(v=[1,2,3,4]) == [2,3,4]
+        assert FPO.tail(v=(42,56,32)) == (56,32)
+        assert FPO.tail(v=&#39;abc&#39;) == &#39;bc&#39;
+        assert FPO.tail(v=[]) == None
+        assert FPO.tail(v={}) == None
+        assert FPO.tail(v=&#39;&#39;) == None
+    &#39;&#39;&#39;
+    if bool(v) is not True:
+        return None
+    elif isinstance(v, dict) is True:
+        init_k = next(iter(v))
+        r = {}
+        for key,value in v.items():
+            if key is not init_k:
+                r[key] = value
+        return r
+    elif isinstance(v, (list, tuple)) is True:
+        return v[1:]
+    elif isinstance(v, str) is True:
+        return v[1:]</code></pre>
+</details>
+</dd>
+<dt id="fpo.take"><code class="name flex">
+<span>def <span class="ident">take</span></span>(<span>iterable, n=1)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpotake">FPO.take(&hellip;)</h2>
+<p>Returns the specified number of elements from the value, starting from the beginning.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>iterable:   list/string
+n:          number of elements to take from the beginning of the value; if omitted, defaults to `1`
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>list/string
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>items = [2,4,6,8,10]
+assert FPO.take(items, 3) == [2,4,6]
+assert FPO.take(items) == [2]
+assert FPO.take({'apple','banana','cherry'}, 2) == ['apple','banana']
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def take(iterable, n=1):
+    &#39;&#39;&#39;
+    ## FPO.take(...)
+    Returns the specified number of elements from the value, starting from the beginning.
+    ### Arguments:
+        iterable:   list/string
+        n:          number of elements to take from the beginning of the value; if omitted, defaults to `1`
+    ### Returns:
+        list/string
+    ### Example:
+        items = [2,4,6,8,10]
+        assert FPO.take(items, 3) == [2,4,6]
+        assert FPO.take(items) == [2]
+        assert FPO.take({&#39;apple&#39;,&#39;banana&#39;,&#39;cherry&#39;}, 2) == [&#39;apple&#39;,&#39;banana&#39;]
+    &#39;&#39;&#39;
+    r = []
+    if iterable == None:
+        return r
+    counter = 0
+    for item in iterable:
+        if counter == n:
+            break
+        counter += 1
+        r.append(item)
+    if isinstance(iterable, str):
+        return &#39;&#39;.join(r)
+    else:
+        return r</code></pre>
+</details>
+</dd>
+<dt id="fpo.trampoline"><code class="name flex">
+<span>def <span class="ident">trampoline</span></span>(<span>fn)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpotrampoline">FPO.trampoline(&hellip;)</h2>
+<p>Wraps a continuation-returning recursive function in another function that will run it until it no longer returns another continuation function. Trampolines are an alternative to tail calls.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     function to run
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def sum(total,x):
+    if x &lt;= 1:
+    return total + x
+return lambda : sum(total+x, x-1)
+assert FPO.trampoline(fn=sum)(0,5) == 15
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def trampoline(fn):
+    &#39;&#39;&#39;
+    ## FPO.trampoline(...)
+    Wraps a continuation-returning recursive function in another function that will run it until it no longer returns another continuation function. Trampolines are an alternative to tail calls.
+    ### Arguments:
+        fn:     function to run
+    ### Returns:
+        function
+    ### Example:
+        def sum(total,x):
+            if x &lt;= 1:
+            return total + x
+        return lambda : sum(total+x, x-1)
+        assert FPO.trampoline(fn=sum)(0,5) == 15
+    &#39;&#39;&#39;
+    def trampolined(*args, **kwargs):
+        if bool(args):
+            r = fn(*args)
+        else:
+            r = fn(**kwargs)
+        while callable(r) is True:
+            r = r()
+        return r
+    return trampolined</code></pre>
+</details>
+</dd>
+<dt id="fpo.transduce_fn"><code class="name flex">
+<span>def <span class="ident">transduce_fn</span></span>(<span>fn, co, v, l=[])</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpotransducer_transduce">FPO.transducer_transduce(&hellip;)</h2>
+<p>Produces a reducer from a specified transducer and combination function. Then runs a reduction on a list, using that reducer, starting with the specified initial value.
+Note: When composing transducers, the effective order of operations is reversed from normal composition. Instead of expecting composition to be right-to-left, the effective order will be left-to-right (see below).</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn: transducer function
+co: combination function for the transducer
+v: initial value for the reduction
+l: the list for the reduction
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>any
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def double(v):
+    return v * 2
+def is_odd(v):
+    return v % 2 == 1
+def list_push(acc, v):
+    acc.append(v)
+    return acc
+nums = [1,2,3,4,5]
+transducer = FPO.compose(
+    fns=[
+        FPO.transducer_filter(fn=is_odd),
+        FPO.transducer_map(fn=double)
+    ]
+)
+result = FPO.transducer_transduce(
+    fn=transducer,
+    co=list_push,
+    v=[],
+    l=nums
+)
+assert result == [2,6,10]
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def transduce_fn(fn,co,v,l=[]):
+    &#39;&#39;&#39;
+    ## FPO.transducer_transduce(...)
+    Produces a reducer from a specified transducer and combination function. Then runs a reduction on a list, using that reducer, starting with the specified initial value.
+    Note: When composing transducers, the effective order of operations is reversed from normal composition. Instead of expecting composition to be right-to-left, the effective order will be left-to-right (see below).
+    ### Arguments:
+        fn: transducer function
+        co: combination function for the transducer
+        v: initial value for the reduction
+        l: the list for the reduction
+    ### Returns:
+        any
+    ### Example:
+        def double(v):
+            return v * 2
+        def is_odd(v):
+            return v % 2 == 1
+        def list_push(acc, v):
+            acc.append(v)
+            return acc
+        nums = [1,2,3,4,5]
+        transducer = FPO.compose(
+            fns=[
+                FPO.transducer_filter(fn=is_odd),
+                FPO.transducer_map(fn=double)
+            ]
+        )
+        result = FPO.transducer_transduce(
+            fn=transducer,
+            co=list_push,
+            v=[],
+            l=nums
+        )
+        assert result == [2,6,10]
+    &#39;&#39;&#39;
+    transducer = fn
+    combination_fn = co
+    initial_value = v
+    reducer = transducer(v=combination_fn)
+    return reduce(fn=reducer, v=initial_value, l=l)</code></pre>
+</details>
+</dd>
+<dt id="fpo.transducer_bool_and"><code class="name flex">
+<span>def <span class="ident">transducer_bool_and</span></span>(<span>acc, v)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpotransducer_bool_and">FPO.transducer_bool_and(&hellip;)</h2>
+<p>A reducer function. For transducing purposes, a combination function that takes two booleans and ANDs them together. The result is the logical AND of the two values.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>acc:    acculumator
+v:  value
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>true/false
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>assert FPO.transducer_bool_and(acc=True, v=True) == True
+assert FPO.transducer_bool_and(acc=False, v=True) == False
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def transducer_bool_and(acc,v):
+    &#39;&#39;&#39;
+    ## FPO.transducer_bool_and(...)
+    A reducer function. For transducing purposes, a combination function that takes two booleans and ANDs them together. The result is the logical AND of the two values.
+    ### Arguments:
+        acc:    acculumator
+        v:  value
+    ### Returns:
+        true/false
+    ### Example:
+        assert FPO.transducer_bool_and(acc=True, v=True) == True
+        assert FPO.transducer_bool_and(acc=False, v=True) == False
+    &#39;&#39;&#39;
+    if bool(acc) and bool(v) is True:
+        return True
+    else:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="fpo.transducer_bool_or"><code class="name flex">
+<span>def <span class="ident">transducer_bool_or</span></span>(<span>acc, v)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpotransducer_bool_or">FPO.transducer_bool_or(&hellip;)</h2>
+<p>A reducer function. For transducing purposes, a combination function that takes two booleans and ORs them together. The result is the logical OR of the two values.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>acc:    acculumator
+v:  value
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>true/false
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>assert FPO.transducer_bool_or(acc=True, v=True) == True
+assert FPO.transducer_bool_or(acc=False, v=False) == False
+assert FPO.transducer_bool_or(acc=False, v=True) == True
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def transducer_bool_or(acc,v):
+    &#39;&#39;&#39;
+    ## FPO.transducer_bool_or(...)
+    A reducer function. For transducing purposes, a combination function that takes two booleans and ORs them together. The result is the logical OR of the two values.
+    ### Arguments:
+        acc:    acculumator
+        v:  value
+    ### Returns:
+        true/false
+    ### Example:
+        assert FPO.transducer_bool_or(acc=True, v=True) == True
+        assert FPO.transducer_bool_or(acc=False, v=False) == False
+        assert FPO.transducer_bool_or(acc=False, v=True) == True
+    &#39;&#39;&#39;
+    if bool(acc) or bool(v) is True:
+        return True
+    else:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="fpo.transducer_default"><code class="name flex">
+<span>def <span class="ident">transducer_default</span></span>(<span>acc, v)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpotransducer_default">FPO.transducer_default(&hellip;)</h2>
+<p>A reducer function. For transducing purposes, a combination function that's a default placeholder. It returns only the acc that's passed to it. The behavior here is almost the same as FPO.identity(..), except that returns acc instead of v.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>acc:    acculumator
+v:  value
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>any
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>assert FPO.transducer_default(acc=3, v=1) == 3
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def transducer_default(acc,v):
+    &#39;&#39;&#39;
+    ## FPO.transducer_default(...)
+    A reducer function. For transducing purposes, a combination function that&#39;s a default placeholder. It returns only the acc that&#39;s passed to it. The behavior here is almost the same as FPO.identity(..), except that returns acc instead of v.
+    ### Arguments:
+        acc:    acculumator
+        v:  value
+    ### Returns:
+        any
+    ### Example:
+        assert FPO.transducer_default(acc=3, v=1) == 3
+    &#39;&#39;&#39;
+    return acc</code></pre>
+</details>
+</dd>
+<dt id="fpo.transducer_filter"><code class="name flex">
+<span>def <span class="ident">transducer_filter</span></span>(<span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def curried(*args, **kwargs):
+    nonlocal f_args, f_kwargs
+    if args or kwargs:
+        f_args += args
+        f_kwargs.update(kwargs)
+        if len(f_args) is n or len(f_kwargs) is n:
+            return fn(*f_args, **f_kwargs)
+        return curried
+    else:
+        return curried</code></pre>
+</details>
+</dd>
+<dt id="fpo.transducer_filter_fn"><code class="name flex">
+<span>def <span class="ident">transducer_filter_fn</span></span>(<span>fn, v=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpotransducer_filter">FPO.transducer_filter(&hellip;)</h2>
+<p>For transducing purposes, wraps a predicate function as a filter-transducer. Typically, this filter-transducer is then composed with other filter-transducers and/or map-transducers. The resulting transducer is then passed to FPO.transducers.transduce(..).</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:    predicate function
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def is_odd(v):
+    return v % 2 == 1
+def list_push(acc, v):
+    acc.append(v)
+    return acc
+nums = [1,2,3,4,5]
+filter_transducer = FPO.transducer_filter(fn=is_odd)
+r = FPO.transducer_transduce(fn=filter_transducer, co=list_push, v=[], l=nums)
+assert r == [1,3,5]
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def transducer_filter_fn(fn,v=None):
+    &#39;&#39;&#39;
+    ## FPO.transducer_filter(...)
+    For transducing purposes, wraps a predicate function as a filter-transducer. Typically, this filter-transducer is then composed with other filter-transducers and/or map-transducers. The resulting transducer is then passed to FPO.transducers.transduce(..).
+    ### Arguments:
+        fn:    predicate function
+    ### Returns:
+        function
+    ### Example:
+        def is_odd(v):
+            return v % 2 == 1
+        def list_push(acc, v):
+            acc.append(v)
+            return acc
+        nums = [1,2,3,4,5]
+        filter_transducer = FPO.transducer_filter(fn=is_odd)
+        r = FPO.transducer_transduce(fn=filter_transducer, co=list_push, v=[], l=nums)
+        assert r == [1,3,5]
+    &#39;&#39;&#39;
+    predicated_fn = fn
+    combination_fn = v
+    #till waiting on the combination function?
+    if combination_fn is None:
+        #Note: the combination function is usually a composed
+        #function, so we expect the argument by itself,
+        #not wrapped in a dictionary
+        def curried(v):
+            nonlocal predicated_fn
+            return transducer_filter_fn(fn=predicated_fn,v=v)
+        return curried
+
+    def reducer(acc,v):
+        nonlocal predicated_fn, combination_fn
+        if predicated_fn(v):
+            return combination_fn(acc, v)
+        return acc
+    return reducer</code></pre>
+</details>
+</dd>
+<dt id="fpo.transducer_into"><code class="name flex">
+<span>def <span class="ident">transducer_into</span></span>(<span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def curried(*args, **kwargs):
+    nonlocal f_args, f_kwargs
+    if args or kwargs:
+        f_args += args
+        f_kwargs.update(kwargs)
+        if len(f_args) is n or len(f_kwargs) is n:
+            return fn(*f_args, **f_kwargs)
+        return curried
+    else:
+        return curried</code></pre>
+</details>
+</dd>
+<dt id="fpo.transducer_into_fn"><code class="name flex">
+<span>def <span class="ident">transducer_into_fn</span></span>(<span>fn, v, l)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpotransducer_into">FPO.transducer_into(&hellip;)</h2>
+<p>Selects an appropriate combination function (reducer) based on the provided initial value. Then runs FPO.transducers.transduce(..) under the covers.</p>
+<p>Detects initial values of boolean, number, string, and list types, and dispatches to the appropriate combination function accordingly (FPO.transducers.number(..), etc). Note: A boolean initial value selects FPO.transducer_bool_and(..).</p>
+<p>Note: When composing transducers, the effective order of operations is reversed from normal composition. Instead of expecting composition to be right-to-left, the effective order will be left-to-right (see below).</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn: transducer function
+v:  initial value for the reduction; also used to select the appropriate combination function (reducer) for the transducing.
+l: the list for the reductiontransduce_fn
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def double(v):
+    return v * 2
+def is_odd(v):
+    return v % 2 == 1
+nums = [1,2,3,4,5]
+transducer = FPO.compose(
+    fns=[
+        FPO.transducer_filter(fn=is_odd),
+        FPO.transducer_map(fn=double)
+    ]
+)
+assert FPO.transducer_into(fn=transducer, v=[], l=nums) == [2,6,10]
+assert FPO.transducer_into(fn=transducer, v=0, l=nums) == 18
+assert FPO.transducer_into(fn=transducer, v='', l=nums) == '2610'
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def transducer_into_fn(fn,v,l):
+    &#39;&#39;&#39;
+    ## FPO.transducer_into(...)
+    Selects an appropriate combination function (reducer) based on the provided initial value. Then runs FPO.transducers.transduce(..) under the covers.
+
+    Detects initial values of boolean, number, string, and list types, and dispatches to the appropriate combination function accordingly (FPO.transducers.number(..), etc). Note: A boolean initial value selects FPO.transducer_bool_and(..).
+
+    Note: When composing transducers, the effective order of operations is reversed from normal composition. Instead of expecting composition to be right-to-left, the effective order will be left-to-right (see below).
+    ### Arguments:
+        fn: transducer function
+        v:  initial value for the reduction; also used to select the appropriate combination function (reducer) for the transducing.
+        l: the list for the reductiontransduce_fn
+    ### Example:
+        def double(v):
+            return v * 2
+        def is_odd(v):
+            return v % 2 == 1
+        nums = [1,2,3,4,5]
+        transducer = FPO.compose(
+            fns=[
+                FPO.transducer_filter(fn=is_odd),
+                FPO.transducer_map(fn=double)
+            ]
+        )
+        assert FPO.transducer_into(fn=transducer, v=[], l=nums) == [2,6,10]
+        assert FPO.transducer_into(fn=transducer, v=0, l=nums) == 18
+        assert FPO.transducer_into(fn=transducer, v=&#39;&#39;, l=nums) == &#39;2610&#39;
+    &#39;&#39;&#39;
+    transducer = fn
+    combination_fn = transducer_default
+    if isinstance(v, bool):
+        combination_fn = transducer_bool_and
+    elif isinstance(v, str):
+        combination_fn = transducer_string
+    elif isinstance(v, int):
+        combination_fn = transducer_number
+    elif isinstance(v, list):
+        combination_fn = transducer_list
+    else:
+        transducer_default
+    return transduce_fn(fn=transducer, co=combination_fn, v=v, l=l)</code></pre>
+</details>
+</dd>
+<dt id="fpo.transducer_list"><code class="name flex">
+<span>def <span class="ident">transducer_list</span></span>(<span>acc, v)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpotransducer_list">FPO.transducer_list(&hellip;)</h2>
+<p>A reducer function. For transducing purposes, a combination function that takes an array and a value, and mutates the array by pushing the value onto the end of it. The mutated array is returned.
+<em>This function has side-effects</em>, for performance reasons. It should be used with caution.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>acc:    acculumator
+v:  value
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>list
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>arr = [1,2,3]
+FPO.transducer_list(acc=arr,v=4)
+assert arr == [1,2,3,4]
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def transducer_list(acc,v):
+    &#39;&#39;&#39;
+    ## FPO.transducer_list(...)
+    A reducer function. For transducing purposes, a combination function that takes an array and a value, and mutates the array by pushing the value onto the end of it. The mutated array is returned.
+    *This function has side-effects*, for performance reasons. It should be used with caution.
+    ### Arguments:
+        acc:    acculumator
+        v:  value
+    ### Returns:
+        list
+    ### Example:
+        arr = [1,2,3]
+        FPO.transducer_list(acc=arr,v=4)
+        assert arr == [1,2,3,4]
+    &#39;&#39;&#39;
+    acc.append(v)
+    return acc</code></pre>
+</details>
+</dd>
+<dt id="fpo.transducer_map"><code class="name flex">
+<span>def <span class="ident">transducer_map</span></span>(<span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def curried(*args, **kwargs):
+    nonlocal f_args, f_kwargs
+    if args or kwargs:
+        f_args += args
+        f_kwargs.update(kwargs)
+        if len(f_args) is n or len(f_kwargs) is n:
+            return fn(*f_args, **f_kwargs)
+        return curried
+    else:
+        return curried</code></pre>
+</details>
+</dd>
+<dt id="fpo.transducer_map_fn"><code class="name flex">
+<span>def <span class="ident">transducer_map_fn</span></span>(<span>fn, v=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpotransducer_map">FPO.transducer_map(&hellip;)</h2>
+<p>For transducing purposes, wraps a mapper function as a map-transducer. Typically, this map-transducer is then composed with other filter-transducers and/or map-transducers. The resulting transducer is then passed to FPO.transducers.transduce(..).
+The map-transducer is not a reducer itself; it's expecting a combination function (reducer), which will then produce a filter-reducer. So alternately, you can manually create the map-reducer and use it directly with a regular FPO.reduce(..) reduction.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn: mapper function
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def double(v):
+    return v * 2
+def array_push(acc, v):
+    acc.append(v)
+    return acc
+nums = [1,2,3,4,5]
+map_transducer = FPO.transducer_map(fn=double)
+r = FPO.transducer_transduce(
+    fn=map_transducer,
+    co=array_push,
+    v=[],
+    l=nums
+)
+assert r == [2,4,6,8,10]
+map_reducer = map_transducer(v=array_push)
+assert map_reducer(acc=[], v=3) == [6]
+assert FPO.reduce(fn=map_reducer,v=[],l=nums) == [2,4,6,8,10]
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def transducer_map_fn(fn,v=None):
+    &#39;&#39;&#39;
+    ## FPO.transducer_map(...)
+    For transducing purposes, wraps a mapper function as a map-transducer. Typically, this map-transducer is then composed with other filter-transducers and/or map-transducers. The resulting transducer is then passed to FPO.transducers.transduce(..).
+    The map-transducer is not a reducer itself; it&#39;s expecting a combination function (reducer), which will then produce a filter-reducer. So alternately, you can manually create the map-reducer and use it directly with a regular FPO.reduce(..) reduction.
+    ### Arguments:
+        fn: mapper function
+    ### Returns:
+        function
+    ### Example:
+        def double(v):
+            return v * 2
+        def array_push(acc, v):
+            acc.append(v)
+            return acc
+        nums = [1,2,3,4,5]
+        map_transducer = FPO.transducer_map(fn=double)
+        r = FPO.transducer_transduce(
+            fn=map_transducer,
+            co=array_push,
+            v=[],
+            l=nums
+        )
+        assert r == [2,4,6,8,10]
+        map_reducer = map_transducer(v=array_push)
+        assert map_reducer(acc=[], v=3) == [6]
+        assert FPO.reduce(fn=map_reducer,v=[],l=nums) == [2,4,6,8,10]
+    &#39;&#39;&#39;
+    mapper_fn = fn
+    combination_fn = v
+    #till waiting on the combination function?
+    if combination_fn is None:
+        #Note: the combination function is usually a composed
+        #function, so we expect the argument by itself,
+        #not wrapped in a dictionary
+        def curried(v):
+            nonlocal mapper_fn
+            return transducer_map_fn(fn=mapper_fn,v=v)
+        return curried
+
+    def reducer(acc,v):
+        nonlocal mapper_fn, combination_fn
+        return combination_fn(acc,v=mapper_fn(v))
+    return reducer</code></pre>
+</details>
+</dd>
+<dt id="fpo.transducer_number"><code class="name flex">
+<span>def <span class="ident">transducer_number</span></span>(<span>acc, v)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpotransducer_number">FPO.transducer_number(&hellip;)</h2>
+<p>A reducer function. For transducing purposes, a combination function that adds together the two numbers passed into it. The result is the sum.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>acc: acculumator
+v: value
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>number
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>assert FPO.transducer_number( acc=3, v=4) == 7
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def transducer_number(acc,v):
+    &#39;&#39;&#39;
+    ## FPO.transducer_number(...)
+    A reducer function. For transducing purposes, a combination function that adds together the two numbers passed into it. The result is the sum.
+    ### Arguments:
+        acc: acculumator
+        v: value
+    ### Returns:
+        number
+    ### Example:
+        assert FPO.transducer_number( acc=3, v=4) == 7
+    &#39;&#39;&#39;
+    return acc + v</code></pre>
+</details>
+</dd>
+<dt id="fpo.transducer_string"><code class="name flex">
+<span>def <span class="ident">transducer_string</span></span>(<span>acc, v)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpotransducer_string">FPO.transducer_string(&hellip;)</h2>
+<p>A reducer function. For transducing purposes, a combination function that concats the two strings passed into it. The result is the concatenation.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>acc: acculumator
+v: value
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>string
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>assert FPO.transducer_string( acc='hello', v='world') == 'helloworld'
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def transducer_string(acc,v):
+    &#39;&#39;&#39;
+    ## FPO.transducer_string(...)
+    A reducer function. For transducing purposes, a combination function that concats the two strings passed into it. The result is the concatenation.
+    ### Arguments:
+        acc: acculumator
+        v: value
+    ### Returns:
+        string
+    ### Example:
+        assert FPO.transducer_string( acc=&#39;hello&#39;, v=&#39;world&#39;) == &#39;helloworld&#39;
+    &#39;&#39;&#39;
+    return str(acc) + str(v)</code></pre>
+</details>
+</dd>
+<dt id="fpo.transducer_transduce"><code class="name flex">
+<span>def <span class="ident">transducer_transduce</span></span>(<span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def curried(*args, **kwargs):
+    nonlocal f_args, f_kwargs
+    if args or kwargs:
+        f_args += args
+        f_kwargs.update(kwargs)
+        if len(f_args) is n or len(f_kwargs) is n:
+            return fn(*f_args, **f_kwargs)
+        return curried
+    else:
+        return curried</code></pre>
+</details>
+</dd>
+<dt id="fpo.unapply"><code class="name flex">
+<span>def <span class="ident">unapply</span></span>(<span>fn, props)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpounapply">FPO.unapply(..)</h2>
+<p>Wraps a function to gather individual positional arguments into an object argument.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn:     function to wrap
+props:  list of property names (strings) to indicate the order to gather individual positional arguments as properties.
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h2 id="example">Example</h2>
+<p>def foo(x,y):
+return x + y
+f = FPO.unapply(fn=foo, props=['x','y'])
+assert f(1,2) == 3</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def unapply(fn, props):
+    &#39;&#39;&#39;
+    ## FPO.unapply(..)
+    Wraps a function to gather individual positional arguments into an object argument.
+    ### Arguments:
+        fn:     function to wrap
+        props:  list of property names (strings) to indicate the order to gather individual positional arguments as properties.
+    ### Returns:
+        function
+    Example:
+        def foo(x,y):
+            return x + y
+        f = FPO.unapply(fn=foo, props=[&#39;x&#39;,&#39;y&#39;])
+        assert f(1,2) == 3
+    &#39;&#39;&#39;
+    def unapplied(*args):
+        g = zip(props,args)
+        kwargs = dict(g)
+        return fn(**kwargs)
+    return unapplied</code></pre>
+</details>
+</dd>
+<dt id="fpo.unary"><code class="name flex">
+<span>def <span class="ident">unary</span></span>(<span>fn, prop)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpounary">FPO.unary(..)</h2>
+<p>Wraps a function to restrict its inputs to only one named argument as specified.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn: function to wrap
+prop: property name to allow as named argument
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def foo(**kwargs):
+    return kwargs
+f = FPO.unary(fn=foo, prop='y')
+assert f(x=1,y=2,z=3) == {'y':2}
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def unary(fn,prop):
+    &#39;&#39;&#39;
+    ## FPO.unary(..)
+    Wraps a function to restrict its inputs to only one named argument as specified.
+    ### Arguments:
+        fn: function to wrap
+        prop: property name to allow as named argument
+    ### Returns:
+        function
+    ### Example:
+        def foo(**kwargs):
+            return kwargs
+        f = FPO.unary(fn=foo, prop=&#39;y&#39;)
+        assert f(x=1,y=2,z=3) == {&#39;y&#39;:2}
+    &#39;&#39;&#39;
+    def unary_fn(**kwargs):
+        l_kwargs = {}
+        l_kwargs[prop] = kwargs[prop]
+        return fn(**l_kwargs)
+    return unary_fn</code></pre>
+</details>
+</dd>
+<dt id="fpo.uncurry"><code class="name flex">
+<span>def <span class="ident">uncurry</span></span>(<span>fn)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="fpouncurry">FPO.uncurry(&hellip;)</h2>
+<p>Wraps a (strictly) curried function in a new function that accepts all the arguments at once, and provides them one at a time to the underlying curried function.</p>
+<h3 id="arguments">Arguments:</h3>
+<pre><code>fn: function to uncurry
+</code></pre>
+<h3 id="returns">Returns:</h3>
+<pre><code>function
+</code></pre>
+<h3 id="example">Example:</h3>
+<pre><code>def foo(x,y,z):
+    return x + y + z
+f = FPO.curry(fn=foo, n=3)
+p = FPO.uncurry(fn=f)
+assert p(x=1,y=2,z=3) == 6
+</code></pre></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def uncurry(fn):
+    &#39;&#39;&#39;
+    ## FPO.uncurry(...)
+    Wraps a (strictly) curried function in a new function that accepts all the arguments at once, and provides them one at a time to the underlying curried function.
+    ### Arguments:
+        fn: function to uncurry
+    ### Returns:
+        function
+    ### Example:
+        def foo(x,y,z):
+            return x + y + z
+        f = FPO.curry(fn=foo, n=3)
+        p = FPO.uncurry(fn=f)
+        assert p(x=1,y=2,z=3) == 6
+    &#39;&#39;&#39;
+    def uncurry_fn(**kwargs):
+        print(&#39;AAAA&#39;, kwargs)
+        r = fn
+        for key,v in kwargs.items():
+            r = r(**{key:v})
+        return r
+    return uncurry_fn</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="fpo.ap" href="#fpo.ap">ap</a></code></li>
+<li><code><a title="fpo.apply" href="#fpo.apply">apply</a></code></li>
+<li><code><a title="fpo.binary" href="#fpo.binary">binary</a></code></li>
+<li><code><a title="fpo.chain" href="#fpo.chain">chain</a></code></li>
+<li><code><a title="fpo.chain_dict" href="#fpo.chain_dict">chain_dict</a></code></li>
+<li><code><a title="fpo.complement" href="#fpo.complement">complement</a></code></li>
+<li><code><a title="fpo.compose" href="#fpo.compose">compose</a></code></li>
+<li><code><a title="fpo.constant" href="#fpo.constant">constant</a></code></li>
+<li><code><a title="fpo.curry" href="#fpo.curry">curry</a></code></li>
+<li><code><a title="fpo.curry_multiple" href="#fpo.curry_multiple">curry_multiple</a></code></li>
+<li><code><a title="fpo.filter_in" href="#fpo.filter_in">filter_in</a></code></li>
+<li><code><a title="fpo.filter_in_dict" href="#fpo.filter_in_dict">filter_in_dict</a></code></li>
+<li><code><a title="fpo.filter_out" href="#fpo.filter_out">filter_out</a></code></li>
+<li><code><a title="fpo.filter_out_dict" href="#fpo.filter_out_dict">filter_out_dict</a></code></li>
+<li><code><a title="fpo.flat_map" href="#fpo.flat_map">flat_map</a></code></li>
+<li><code><a title="fpo.flat_map_dict" href="#fpo.flat_map_dict">flat_map_dict</a></code></li>
+<li><code><a title="fpo.flatten" href="#fpo.flatten">flatten</a></code></li>
+<li><code><a title="fpo.head" href="#fpo.head">head</a></code></li>
+<li><code><a title="fpo.identity" href="#fpo.identity">identity</a></code></li>
+<li><code><a title="fpo.keep" href="#fpo.keep">keep</a></code></li>
+<li><code><a title="fpo.keep_dict" href="#fpo.keep_dict">keep_dict</a></code></li>
+<li><code><a title="fpo.map_dict" href="#fpo.map_dict">map_dict</a></code></li>
+<li><code><a title="fpo.map_list" href="#fpo.map_list">map_list</a></code></li>
+<li><code><a title="fpo.memoise" href="#fpo.memoise">memoise</a></code></li>
+<li><code><a title="fpo.n_ary" href="#fpo.n_ary">n_ary</a></code></li>
+<li><code><a title="fpo.partial" href="#fpo.partial">partial</a></code></li>
+<li><code><a title="fpo.pick" href="#fpo.pick">pick</a></code></li>
+<li><code><a title="fpo.pick_all" href="#fpo.pick_all">pick_all</a></code></li>
+<li><code><a title="fpo.pipe" href="#fpo.pipe">pipe</a></code></li>
+<li><code><a title="fpo.pluck" href="#fpo.pluck">pluck</a></code></li>
+<li><code><a title="fpo.prop" href="#fpo.prop">prop</a></code></li>
+<li><code><a title="fpo.reassoc" href="#fpo.reassoc">reassoc</a></code></li>
+<li><code><a title="fpo.reduce" href="#fpo.reduce">reduce</a></code></li>
+<li><code><a title="fpo.reduce_dict" href="#fpo.reduce_dict">reduce_dict</a></code></li>
+<li><code><a title="fpo.reduce_right" href="#fpo.reduce_right">reduce_right</a></code></li>
+<li><code><a title="fpo.reject" href="#fpo.reject">reject</a></code></li>
+<li><code><a title="fpo.remap" href="#fpo.remap">remap</a></code></li>
+<li><code><a title="fpo.set_prop" href="#fpo.set_prop">set_prop</a></code></li>
+<li><code><a title="fpo.tail" href="#fpo.tail">tail</a></code></li>
+<li><code><a title="fpo.take" href="#fpo.take">take</a></code></li>
+<li><code><a title="fpo.trampoline" href="#fpo.trampoline">trampoline</a></code></li>
+<li><code><a title="fpo.transduce_fn" href="#fpo.transduce_fn">transduce_fn</a></code></li>
+<li><code><a title="fpo.transducer_bool_and" href="#fpo.transducer_bool_and">transducer_bool_and</a></code></li>
+<li><code><a title="fpo.transducer_bool_or" href="#fpo.transducer_bool_or">transducer_bool_or</a></code></li>
+<li><code><a title="fpo.transducer_default" href="#fpo.transducer_default">transducer_default</a></code></li>
+<li><code><a title="fpo.transducer_filter" href="#fpo.transducer_filter">transducer_filter</a></code></li>
+<li><code><a title="fpo.transducer_filter_fn" href="#fpo.transducer_filter_fn">transducer_filter_fn</a></code></li>
+<li><code><a title="fpo.transducer_into" href="#fpo.transducer_into">transducer_into</a></code></li>
+<li><code><a title="fpo.transducer_into_fn" href="#fpo.transducer_into_fn">transducer_into_fn</a></code></li>
+<li><code><a title="fpo.transducer_list" href="#fpo.transducer_list">transducer_list</a></code></li>
+<li><code><a title="fpo.transducer_map" href="#fpo.transducer_map">transducer_map</a></code></li>
+<li><code><a title="fpo.transducer_map_fn" href="#fpo.transducer_map_fn">transducer_map_fn</a></code></li>
+<li><code><a title="fpo.transducer_number" href="#fpo.transducer_number">transducer_number</a></code></li>
+<li><code><a title="fpo.transducer_string" href="#fpo.transducer_string">transducer_string</a></code></li>
+<li><code><a title="fpo.transducer_transduce" href="#fpo.transducer_transduce">transducer_transduce</a></code></li>
+<li><code><a title="fpo.unapply" href="#fpo.unapply">unapply</a></code></li>
+<li><code><a title="fpo.unary" href="#fpo.unary">unary</a></code></li>
+<li><code><a title="fpo.uncurry" href="#fpo.uncurry">uncurry</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.5.3</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
