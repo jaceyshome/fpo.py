@@ -1017,7 +1017,7 @@ def transducer_bool_or(acc,v):
     else:
         return False
 
-    
+
 
 '''
 ##FPO.transducer_default(...)
@@ -1060,7 +1060,7 @@ For transducing purposes, wraps a predicate function as a filter-transducer. Typ
 #             nonlocal predicated_fn
 #             return transducer_filter_fn(fn=predicated_fn,v=v)
 #         return curried
-    
+
 #     def reducer(acc,v):
 #         nonlocal predicated_fn, combination_fn
 #         if predicated_fn(v):
@@ -1081,7 +1081,7 @@ Note: When composing transducers, the effective order of operations is reversed 
     co: combination function for the transducer
     v: initial value for the reduction
     l: the list for the reduction
-###Returns: 
+###Returns:
     any
 Example:
 '''
@@ -1101,15 +1101,37 @@ Wraps a function to gather individual positional arguments into an object argume
 ###Arguments:
     fn:     function to wrap
     props:  list of property names (strings) to indicate the order to gather individual positional arguments as properties.
-###Returns: 
+###Returns:
     function
 Example:
-
+    def foo(x,y):
+        return x + y
+    f = FPO.unapply(fn=foo, props=['x','y'])
+    assert f(1,2) == 3
 '''
 def unapply(fn, props):
-    
     def unapplied(*args):
         g = zip(props,args)
         kwargs = dict(g)
         return fn(**kwargs)
     return unapplied
+
+
+
+'''
+##FPO.unary(..)
+Wraps a function to restrict its inputs to only one named argument as specified.
+###Arguments:
+    fn: function to wrap
+    prop: property name to allow as named argument
+###Returns:
+    function
+###Example:
+
+'''
+def unary(fn,prop):
+    def unary_fn(**kwargs):
+        l_kwargs = {}
+        l_kwargs[prop] = kwargs[prop]
+        return fn(**l_kwargs)
+    return unary_fn

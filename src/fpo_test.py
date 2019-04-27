@@ -294,4 +294,10 @@ def test_unapply():
     def foo(x,y):
         return x + y
     f = FPO.unapply(fn=foo, props=['x','y'])
-    assert f(1,2) == f
+    assert f(1,2) == 3
+
+def test_unary():
+    def foo(**kwargs):
+        return kwargs
+    f = FPO.unary(fn=foo, prop='y')
+    assert f(x=1,y=2,z=3) == {'y':2}
